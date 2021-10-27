@@ -1,6 +1,6 @@
 {
   "name": "@uteamjs/react",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "@uteamjs/react framework for React-Redux",
   "repository": {
     "type": "git",
@@ -30,7 +30,6 @@
     "@ag-grid-community/core": "^25.2.0",
     "@ag-grid-community/react": "^25.2.0",
     "@babel/runtime": "^7.15.4",
-    "@uteamjs/template": "^1.0.0",
     "bootstrap": "4.6.0",
     "cross-env": "^7.0.3",
     "isomorphic-fetch": "^3.0.0",
