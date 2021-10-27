@@ -1,0 +1,22 @@
+$white: white
+$red: #fa0000
+
+$top-bottom: 10px
+$left-right: 20px
+$margin-lt-rt: 15px
+$icon-size: 20
+
+:export 
+    iconSize: $icon-size
+
+@mixin flex-column
+    display: flex
+    flex-direction: column
+    
+    > div:last-child
+        flex: 1
+        overflow-y: auto
+
+@mixin last-scroll-y
+    > div:last-child
+        overflow-y: auto

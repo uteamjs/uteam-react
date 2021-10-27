@@ -1,1 +1,3 @@
-# uteam-react
+# @uteam/react
+
+http://u.team comming soon...

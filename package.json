@@ -1,0 +1,58 @@
+{
+  "name": "@uteamjs/react",
+  "version": "1.0.0",
+  "description": "@uteamjs/react framework for React-Redux",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uteamjs/uteam-react.git"
+  },
+  "bugs": {
+    "url": "https://github.com/uteamjs/uteam-react.git/issues"
+  },
+  "main": "lib/index.js",
+  "keywords": [
+    "react",
+    "redux",
+    "react-router",
+    "uteamjs"
+  ],
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {
+    "build:cjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib"
+  },
+  "author": "U Team Inc.",
+  "license": "MIT",
+  "dependencies": {
+    "@ag-grid-community/all-modules": "^25.2.0",
+    "@ag-grid-community/core": "^25.2.0",
+    "@ag-grid-community/react": "^25.2.0",
+    "@babel/runtime": "^7.15.4",
+    "@uteam/template": "^1.0.0",
+    "bootstrap": "4.6.0",
+    "cross-env": "^7.0.3",
+    "isomorphic-fetch": "^3.0.0",
+    "lodash": "^4.17.21",
+    "react-bootstrap": "^1.6.0",
+    "react-day-picker": "^7.4.10",
+    "react-dom": "^17.0.2",
+    "react-icons": "^4.2.0",
+    "react-redux": "^7.2.4",
+    "react-router-dom": "^5.2.0",
+    "react-toastify": "^8.0.3",
+    "react-toggle": "^4.1.2",
+    "redux": "^4.1.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.15.7",
+    "@babel/plugin-proposal-class-properties": "^7.14.5",
+    "@babel/plugin-transform-modules-commonjs": "^7.15.4",
+    "@babel/plugin-transform-react-jsx": "^7.14.9",
+    "@babel/plugin-transform-runtime": "^7.15.8",
+    "@babel/preset-env": "^7.15.8",
+    "babel-plugin-transform-scss": "^1.1.0",
+    "sass": "^1.43.4"
+  }
+}

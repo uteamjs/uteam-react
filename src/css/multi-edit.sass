@@ -1,0 +1,34 @@
+@import './form.module'
+
+.multi-edit
+    margin: $top-bottom 0
+    overflow-y: auto
+    @include flex-column
+
+    .hide
+        display: none
+
+    > div:first-child
+        font-weight: bold
+    
+        > svg
+            margin-left: 10px
+
+    > div:last-child
+        border: 1px solid grey
+        margin-top: 5px
+        padding: 0 $top-bottom
+  
+    .field-group-item
+        margin: $top-bottom 0
+        padding: $top-bottom $margin-lt-rt
+        border: 1px solid #cccccc
+
+        > div 
+            clear: both
+
+        > svg 
+            float: right
+
+.multi-edit-section
+    @include flex-column

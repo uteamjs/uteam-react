@@ -1,0 +1,72 @@
+@import './form.module'
+
+// @uteamjs/react-form/css/section
+
+.section
+    background-color: $white
+    margin: $top-bottom 0
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2)
+
+    > div.show
+        display: block
+
+    > div.hide
+        display: none !important
+
+    .pending
+        background-color: #ebecae
+
+    .cache
+        background-color: #c2f1ee
+
+    // Section Title
+    > div:first-child
+        background: #f5f5f5
+        padding: $top-bottom $left-right
+
+    // Content
+    > div:last-child
+        background: $white
+        padding: $top-bottom $left-right
+        display: flex
+        flex-direction: column
+
+    .col:last-child
+        border-left: 1px solid #e2e2e2
+
+    // For center on read nl itmes
+    .form-group.row
+        align-items: center
+
+    .form-control
+        font-size: 14px
+        padding-top: 0
+        padding-bottom: 0
+        //height: auto
+
+    .section-title
+        font-weight: bold
+        display: inline-block
+        vertical-align: middle
+
+    .section-icon
+        display: inline-block
+        color: $red
+        background-color: $white
+        padding: 10px
+        margin-right: $left-right
+        border-radius: 20px
+
+    .section-action
+        float: right
+
+        > .badge
+            color: $white
+            background-color: $red
+            width: 24px
+            height: 24px
+            padding: 6px
+            border-radius: 12px
+
+        > svg
+            margin-left: $left-right
