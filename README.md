@@ -1,3 +1,2 @@
 # @uteam/react
-
-http://u.team comming soon...
+Please visit http://u.team

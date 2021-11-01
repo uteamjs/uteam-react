@@ -2,8 +2,8 @@ import React from 'react'
 import { AgGridReact } from '@ag-grid-community/react'
 import { AllCommunityModules } from "@ag-grid-community/all-modules"
 
-import '@ag-grid-community/core/dist/styles/ag-grid.css'
-import '@ag-grid-community/core/dist/styles/ag-theme-alpine.css'
+import '@ag-grid-community/core/dist/styles/ag-grid.min.css'
+import '@ag-grid-community/core/dist/styles/ag-theme-alpine.min.css'
 
 const _add =  comp => (id, Obj, func) => ({ 
     click:  { 
@@ -47,4 +47,4 @@ export const utView = _this => props => {
 
 export const goBack = _this => () => _this.props.history.goBack()
 
-export const getSelectedRowID = _this => () => _this.gridapi.getSelectedNodes().map(t => `'${t.data.id}'`)
+export const getSelectedRowID = _this => () => _this.gridapi.getSelectedNodes().map(t => t.data.id)
