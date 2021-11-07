@@ -23,7 +23,7 @@ Open your browser with URL http://localhost:3000, then click the __Get Started__
 Refer to [Get Started](https://u.team/document/introduction/getstart) for more details.
 
 # @uteamjs Element
-@uteamjs \<Element> is a special React Element created by [utCreateElement()](https://u.team/document/uteam-react/utCreateElement) function, which is the core of the framework.
+**@uteamjs \<Element>** is a special React Element created by [utCreateElement()](https://u.team/document/uteam-react/utCreateElement) function, which is the core of the framework.
 ## Reducer
 ```jsx
 const reducer = utReducer('react-example/hello-world', {
@@ -43,7 +43,7 @@ const reducer = utReducer('react-example/hello-world', {
 })
 ```
 [Reducer](https://u.team/document/uteam-react/reducer) is an object which has:
-- A unique identifier in the form of **<Module>/<Component>**.
+- A unique identifier in the form of **\<Module>/\<Component>**.
 - An **init** object for initializing the state variable
 - **actions** to be dispatched by the [call() / api()](https://u.team/document/uteam-react/callapi) functions
 ## Layout
@@ -54,7 +54,7 @@ const layout = ({ _, Field }) => <>
        Your name is: {_.fields.name.value}
    </>
 ```
-[Layout](https://u.team/document/uteam-react/layout) is the **@uteamjs** Component with different properties injected. A special **_** object refers to the state object inside the **Redux** store connected to this component.  Other variables include Form elements such as **Field, Section ...** and helper functions such **call() & api()**.
+[Layout](https://u.team/document/uteam-react/layout) is the **@uteamjs** Component with different properties injected. A special **_** object refers to the state object inside the **Redux** store connected to this component.  Other variables include Form elements such as **Field, Section ...** and helper functions such [call() / api()](https://u.team/document/uteam-react/callapi).
 ## utCreateElement
 ```jsx
 export default utCreateElement({ reducer, layout })
@@ -62,11 +62,11 @@ export default utCreateElement({ reducer, layout })
 Finally, a standard **React JSX Element** is created using the [utCreateElement()](https://u.team/document/uteam-react/utCreateElement) function by passing the reducer and layout object to it.  
 
 At the back, [@uteamjs/react](https://u.team/document/uteam-react/overview) helps to:
-- Initialize the Redux store with the init object
+- Initialize the **Redux store** with the init object
 - Create the action dispatcher
-- Connect the reducer to layout component automatically
+- Connect the [reducer](https://u.team/document/uteam-react/reducer) to [layout](https://u.team/document/uteam-react/layout) component automatically
 - Inject state object, Form element and helper functions as properties in Layout component
-- Fetching data with backend RESTful Api
+- Fetching data with backend [RESTful Api](https://u.team/document/uteam-node/api)
 - Setup the React-Router
 
 # License
