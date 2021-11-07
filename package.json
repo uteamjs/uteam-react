@@ -1,6 +1,6 @@
 {
   "name": "@uteamjs/react",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "@uteamjs/react framework for React-Redux",
   "repository": {
     "type": "git",
