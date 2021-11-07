@@ -2,8 +2,25 @@
 
 Using [@uteamjs/react](https://u.team/document/uteam-react/overview), there are no additional boilerplate files generated.  The **Redux reducer** logic and React layout components can be easily put together in a **single JSX** file.  It minimizes the development and maintenance effort substantially.
 
-In addition, [uteam CLI](https://u.team/document/uteam-react/overview) helps you automate the creation, deletion and generation of application modules and packages to further simplify the wo
-workflow of development.
+# Installation
+[uteam CLI](https://u.team/document/uteam-react/overview) helps you automate the creation, deletion and generation of application modules and packages.
+```
+$ npm install -g uteam
+```
+Use **uteam create** to generate React-Redux application based on [@uteamjs/react](https://u.team/document/uteam-react/overview) framework:
+```
+$ uteam create -a tutorial-react -p get-started -g
+
+```
+Change to __...packages/main__ folder, then start the webpack development server:
+```
+$ npm start
+```
+Open your browser with URL http://localhost:3000, then click the __Get Started__ link:
+
+![Get Started](https://u.team/assets/img/kix.sznz2xcqhgjb.png)
+
+Refer to [Get Started](https://u.team/document/introduction/getstart) for more details.
 
 # @uteamjs Element
 @uteamjs \<Element> is a special React Element created by [utCreateElement()](https://u.team/document/uteam-react/utCreateElement) function, which is the core of the framework.
