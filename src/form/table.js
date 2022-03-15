@@ -39,7 +39,7 @@ export const utView = _this => props => {
     }
 
     return(
-        <div className="ag-theme-alpine">
+        <div className="ag-theme-alpine" style={{...props.style}}>
             <AgGridReact {..._props} />
         </div>
     )

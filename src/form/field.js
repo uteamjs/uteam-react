@@ -1,13 +1,14 @@
 import React from 'react'
 import { Form, Row, Col } from 'react-bootstrap'
 import { isEmpty } from 'lodash'
-import { FcDeleteDatabase } from 'react-icons/fc'
 
 export const onChange = _this => ({ id, index, valid, type, key, _id }) => e => {
 
     const { call, api, _ } = _this.props
     const _f = _this.getField(id)
-    let val = type === 'toggle' ? e.target.checked : e.target.value
+    let val = type === 'toggle' ? e.target.checked : 
+                type === 'checkbox' ? _f.value :
+                    e.target.value
 
     //console.log(id, val)
 

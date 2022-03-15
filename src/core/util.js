@@ -137,6 +137,16 @@ export function updateValue(state, obj) {
     return state
 }
 
+/*  Convert
+    { 'key': {
+      'value': val
+    }}
+    to {
+      'key': val
+    }
+*/
+
+
 export function getValue(obj) {
     let result = {}
     if (obj)
@@ -144,4 +154,16 @@ export function getValue(obj) {
             result[key] = obj[key]['value'];
         }
     return result
+}
+
+// Get URI query string
+// Return - key:value pair object
+
+export function getQuery(location) {
+    return location.search.slice(1)
+        .split('&').reduce((a, t) => {
+            const [k, v] = t.split('=')
+            a[k] = v
+            return a
+        }, {})
 }

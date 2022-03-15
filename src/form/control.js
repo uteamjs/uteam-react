@@ -1,11 +1,10 @@
-import React from 'react'
-import { createElement } from 'react'
+import React, { createElement } from 'react'
 import { Form } from 'react-bootstrap'
-import { capitalize } from '@uteamjs/react'
+import { capitalize } from '..'
 import { getField } from './util'
 import Toggle from 'react-toggle'
-import { AiOutlineHourglass, AiOutlineCloudSync } from 'react-icons/ai'
-import { isUndefined, isEmpty, findKey } from 'lodash'
+import { AiOutlineHourglass } from 'react-icons/ai'
+import { isUndefined, isEmpty } from 'lodash'
 import 'react-toggle/style.css'
 
 const loop = (parent, child, cb) => child ?
@@ -128,9 +127,9 @@ export const utControl = _this => props => {
             return (
                 <Form.Control as={type} value={value || ''}
                     disabled={_isRead}
-                    onChange={_Change({ id, type, index, type })}>
+                    onChange={_Change({ id, index, type })}>
                     {list || _list ? Object.entries(list || _list).map(([key, choice], i) =>
-                        <option key={key + i}>{choice}</option>
+                        <option key={key + i} value={key}>{choice}</option>
                     ) : null}
                 </Form.Control>
             )

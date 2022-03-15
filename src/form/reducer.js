@@ -1,10 +1,9 @@
 
-import { merge } from '@uteamjs/react'
+import { merge, capitalize } from '..'
 import { reduceDate } from './date'
 import { utSectionActions } from './section'
 import { utMultiAction } from './multiEdit'
 import { utControlActions } from './control'
-import { capitalize } from '@uteamjs/react'
 import { getField } from "../.."
 
 const loop = (parent, child, cb) => child ?

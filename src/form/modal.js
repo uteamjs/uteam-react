@@ -1,6 +1,6 @@
 import React from 'react'
 import { Modal } from 'react-bootstrap'
-import { Loading } from '@uteamjs/react'
+import { Loading } from '..'
 // Popup
 export const PopupModal = _this => ({ show, close, title, children, isLoading = false, size = 'lg', param }) => {
     const { Header, Title, Body } = Modal

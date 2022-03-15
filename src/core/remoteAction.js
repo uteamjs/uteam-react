@@ -9,7 +9,6 @@ export const api = store => next => action => {
       if (action.server === 'api') {
         action.payload = action.payload || {}
 
-
         fetch(process.env.API_URL + 'api', {
           credentials: 'include',
           method: 'POST',
