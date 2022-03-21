@@ -39,6 +39,7 @@ export const reduceDate = {
                 y = v
 
             _f.value = new Date(y, m, d)
+              
             if (option)
                 state.fields[option].value = item
         },
@@ -102,7 +103,7 @@ export const utInputDate = _this => ({ option, item, id, index, yearStart = 20 }
 
 
     const listDay = range(1, new Date(y, m + 1, 0).getDate() + 1),
-        listYear = range(y - yearStart, y + 10)
+        listYear = range(y - yearStart, y + 30)
 
     // Add null items
     if(!_field.value) {
