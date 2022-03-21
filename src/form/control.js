@@ -102,8 +102,11 @@ export const utControl = _this => props => {
             </div>
 
         case 'radio':
-            if (_isRead)
-                return list[value]
+            if (_isRead) {
+                console.log('..read radio')
+                return <div>{list[value]}</div>
+            }
+
 
         case 'checkbox':
             return <div>
