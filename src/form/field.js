@@ -94,7 +94,7 @@ export const utfield = _this => props => {
     //const param = { id, index, children, elem, st, append, isRead: readOnly, onKeyPress }
 
     const param = { ...props, isRead: readOnly }
-    const className = param.className + ''
+    const className = (param.className || '') + ''
 
     delete param.className
     delete param.labelPosition
