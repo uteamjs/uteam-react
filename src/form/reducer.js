@@ -14,7 +14,7 @@ const loop = (parent, child, cb) => child ?
         , {})
     : null
 
-const initFields = state =>
+export const initFields = state =>
     state.fieldList = loop(null, state.fields,
         (parent, key, link) => {
             link.label = link.label || capitalize(key)
