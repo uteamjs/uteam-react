@@ -10,8 +10,12 @@ const getUploadBody = action => {
   formData.append('server', 'api')
   formData.append('type', type)
 
-  for (let i in files) 
+  for (let i in files)
     formData.append('file', files[i])
+
+  delete payload.files
+
+  formData.append('payload', JSON.stringify(payload))
 
   return formData
 }
