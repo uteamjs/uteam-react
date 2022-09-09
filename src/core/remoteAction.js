@@ -2,6 +2,20 @@ import fetch from 'isomorphic-fetch'
 import { each } from 'lodash'
 import { toast } from 'react-toastify'
 
+const getUploadBody = action => {
+  const formData = new FormData(), { ref, type, payload } = action
+  const files = payload.files || []
+
+  formData.append('ref', ref)
+  formData.append('server', 'api')
+  formData.append('type', type)
+
+  for (let i in files) 
+    formData.append('file', files[i])
+
+  return formData
+}
+
 export const api = store => next => action => {
   switch (action.server) {
     case 'api':
@@ -9,19 +23,29 @@ export const api = store => next => action => {
       if (action.server === 'api') {
         action.payload = action.payload || {}
 
-        fetch(process.env.API_URL + 'api', {
+        const s = action.type
+        let headers, body, type
+
+        if (s.substring(s.lastIndexOf('/') + 1).match(/upload/)) {
+          body = getUploadBody(action)
+          headers = {} // 'Content-Type': 'multipart/form-data' }
+          type = 'upload'
+
+        } else {
+          body = JSON.stringify(action)
+          headers = { 'Content-Type': 'application/json' }
+          type = 'api'
+        }
+
+        fetch(process.env.API_URL + type, {
           credentials: 'include',
           method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(action)
+          headers, body
+          //body: JSON.stringify(action)
 
         }).then(res => {
           if (res.status >= 400)
             throw new Error('Bad response - status ' + res.status);
-
 
           return res.json()
 
