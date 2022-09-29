@@ -127,6 +127,7 @@ export const utControl = _this => props => {
             return (
                 <Form.Control as={type} value={value || ''}
                     disabled={_isRead}
+                    aria-label={_f.label}
                     onChange={_Change({ id, index, type })}>
                     {list || _list ? Object.entries(list || _list).map(([key, choice], i) =>
                         <option key={key + i} value={key}>{choice}</option>
