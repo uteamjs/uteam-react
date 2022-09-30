@@ -95,18 +95,19 @@ export const utControl = _this => props => {
     switch (type) {
         case 'toggle':
             //console.log(value)
-            return <div>
-                <Toggle defaultChecked={value === true}
+            return <div >
+                <Toggle aria-label={_f.label}
+                    defaultChecked={value === true}
                     disabled={_isRead}
                     onChange={_Change({ id, index, type })} />
             </div>
 
         case 'radio':
-            if (_isRead) 
-                return <div>{list[value]}</div>
+            if (_isRead)
+                return <div aria-label={_f.label}>{list[value]}</div>
 
         case 'checkbox':
-            return <div>
+            return <div aria-label={_f.label}>
                 {list ? Object.entries(list).map(([key, choice], i) =>
                     <Form.Check inline disabled={_isRead}
                         checked={value && value.split('|').indexOf(key) >= 0}
@@ -121,7 +122,7 @@ export const utControl = _this => props => {
             </div>
 
         case 'label':
-            return <div>{value}</div>
+            return <div aria-label={_f.label}>{value}</div>
 
         case 'select':
             return (
@@ -172,7 +173,11 @@ export const utControl = _this => props => {
             if (hint) _props.placeholder = hint
 
             return (<>
-                <Form.Control {...{ ..._props, key: 'f=' + id }} />
+                <Form.Control {...{
+                    ..._props,
+                    key: 'f=' + id,
+                    'aria-label': _f.label
+                }} />
                 {append}
             </>)
 
