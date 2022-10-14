@@ -33,6 +33,7 @@ export const utReducer = (name, o) => {
             isEdit: true,
             isEditSection: {},
             isRow: true,
+            apiStatus: '',
             labelWidth:
                 [['2', '10'], ['4', '8'],
                 ['6', '6'], ['6', '6']],
@@ -43,6 +44,10 @@ export const utReducer = (name, o) => {
             ...utMultiAction,
 
             ...utSectionActions,
+
+            apiStatus: (state, p) => {
+                state.apiStatus = p.status
+            },
 
             popup: (state, obj) => state.popup = obj,
 

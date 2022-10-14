@@ -4,6 +4,7 @@ import { Provider, connect, useSelector } from 'react-redux'
 import { HashRouter as Router } from "react-router-dom"
 import { useForm } from '..'
 import { api } from './remoteAction'
+import _ from 'lodash'
 
 //const context = createContext(null)
 const error = (state = { item: 'home' }, action) => {
@@ -56,8 +57,13 @@ export const storeDelete = ({ name }) => {
 export const utCreateElement = (mod, init) => {
     console.log('...initialize ' + mod.reducer.name)
 
-    const _call = (tp) => (func, payload, next) => 
-        storeCall(tp, func, payload, next, _r.name)
+    const _call = (tp) => (func, payload, next) => {
+        storeCall('call', 'apiStatus', { status: 'waiting' },
+            () => storeCall(tp, func, payload,
+                () => storeCall('call', 'apiStatus', { status: 'isReady' }, next, _r.name)
+                , _r.name)
+            , _r.name)
+    }
 
     const _r = mod.reducer
     //** const _reducer = (state = _r.init, action) => {
@@ -106,7 +112,7 @@ export const utCreateElement = (mod, init) => {
                     //** _: state[_r.name],
                     _: state[_r.name]._,
                     name: _r.name,
-                    api: _call('api'),
+                    api: _call('api', state[_r.name]._),
                     call: _call('none'),
                     ...init
                 }))(mod.layout)
@@ -116,7 +122,7 @@ export const utCreateElement = (mod, init) => {
                 const init = useSelector(t => t[_r.name])
                 const param = {
                     name: _r.name,
-                    api: _call('api'),
+                    api: _call('api', init._),
                     call: _call('none')
                 }
 
