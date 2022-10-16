@@ -5,6 +5,7 @@ import { HashRouter as Router } from "react-router-dom"
 import { useForm } from '..'
 import { api } from './remoteAction'
 import _ from 'lodash'
+import { Environment } from '@ag-grid-community/core'
 
 //const context = createContext(null)
 const error = (state = { item: 'home' }, action) => {
@@ -53,16 +54,22 @@ export const storeDelete = ({ name }) => {
     store.replaceReducer(combineReducers(reducers))
 }
 
-
 export const utCreateElement = (mod, init) => {
     console.log('...initialize ' + mod.reducer.name)
 
     const _call = (tp) => (func, payload, next) => {
-        storeCall('call', 'apiStatus', { status: 'waiting' },
-            () => storeCall(tp, func, payload,
-                () => storeCall('call', 'apiStatus', { status: 'isReady' }, next, _r.name)
+        if(process.env.API_STATUS === 'true' && tp === 'api') {
+
+            const i = func.lastIndexOf('/')
+            const pre_apiStatus = i > 0 ? func.substring(0, i + 1) : ''
+
+            storeCall('call', pre_apiStatus + 'apiStatus', { status: 'waiting' },
+                () => storeCall(tp, func, payload,
+                    () => storeCall('call', pre_apiStatus + 'apiStatus', { status: 'isReady' }, next, _r.name)
+                    , _r.name)
                 , _r.name)
-            , _r.name)
+        } else
+            storeCall(tp, func, payload, next, _r.name)
     }
 
     const _r = mod.reducer
