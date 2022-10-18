@@ -58,14 +58,16 @@ export const utCreateElement = (mod, init) => {
     console.log('...initialize ' + mod.reducer.name)
 
     const _call = (tp) => (func, payload, next) => {
-        if(process.env.API_STATUS === 'true' && tp === 'api') {
+        if (process.env.API_STATUS === 'true' && tp === 'api') {
 
             const i = func.lastIndexOf('/')
             const pre_apiStatus = i > 0 ? func.substring(0, i + 1) : ''
 
-            storeCall('call', pre_apiStatus + 'apiStatus', { status: 'waiting' },
+            storeCall('call', pre_apiStatus + 'apiStatus', { _api_status: 'waiting' },
                 () => storeCall(tp, func, payload,
-                    () => storeCall('call', pre_apiStatus + 'apiStatus', { status: 'isReady' }, next, _r.name)
+                    res => storeCall('call', pre_apiStatus + 'apiStatus', {
+                        ...res.payload, _api_status: 'isReady'
+                    }, next, _r.name)
                     , _r.name)
                 , _r.name)
         } else

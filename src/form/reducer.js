@@ -46,7 +46,7 @@ export const utReducer = (name, o) => {
             ...utSectionActions,
 
             apiStatus: (state, p) => {
-                state.apiStatus = p.status
+                state.apiStatus = p._api_status
             },
 
             popup: (state, obj) => state.popup = obj,
