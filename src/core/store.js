@@ -4,8 +4,6 @@ import { Provider, connect, useSelector } from 'react-redux'
 import { HashRouter as Router } from "react-router-dom"
 import { useForm } from '..'
 import { api } from './remoteAction'
-import _ from 'lodash'
-import { Environment } from '@ag-grid-community/core'
 
 //const context = createContext(null)
 const error = (state = { item: 'home' }, action) => {
@@ -54,27 +52,77 @@ export const storeDelete = ({ name }) => {
     store.replaceReducer(combineReducers(reducers))
 }
 
+const _call_api = _r =>  tp => (func, payload, next) => {
+
+    if (process.env.API_STATUS === 'true' && tp === 'api') {
+
+        const i = func.lastIndexOf('/')
+        const pre_apiStatus = i > 0 ? func.substring(0, i + 1) : ''
+
+        storeCall('call', pre_apiStatus + 'apiStatus', { _api_status: 'waiting' },
+            () => storeCall(tp, func, payload,
+                res => storeCall('call', pre_apiStatus + 'apiStatus', {
+                    ...res.payload, _api_status: 'isReady'
+                }, next, _r.name)
+                , _r.name)
+            , _r.name)
+    } else
+        storeCall(tp, func, payload, next, _r.name)
+}
+
+
+const _connect = (mod, init, _r) => {
+
+    const _call = _call_api(_r)
+
+    if (typeof mod.layout === 'function') {
+
+        if (!!mod.layout.prototype.isReactComponent)
+            // Class component
+            return connect(
+                state => ({
+                    //** _: state[_r.name],
+                    _: state[_r.name]._,
+                    name: _r.name,
+                    api: _call('api'),
+                    call: _call('none'),
+                    ...init
+                }))(mod.layout)
+
+        else {
+            return props => {
+                const init = useSelector(t => t[mod.name])
+                const param = {
+                    name: _r.name,
+                    api: _call('api'),
+                    call: _call('none')
+                }
+
+                if (!mod.content)
+                    mod.content = useForm({
+                        props: {
+                            ...param,
+                            init,
+                        }, ...mod.param
+                    }, mod.param?.extend)
+
+                return mod.layout({
+                    ...{ ...param, _: init._ }, ...init, ...props, ...mod.content
+                })
+            }
+        }
+    }
+
+    return mod.layout
+}
+
 export const utCreateElement = (mod, init) => {
     console.log('...initialize ' + mod.reducer.name)
 
-    const _call = (tp) => (func, payload, next) => {
-        if (process.env.API_STATUS === 'true' && tp === 'api') {
-
-            const i = func.lastIndexOf('/')
-            const pre_apiStatus = i > 0 ? func.substring(0, i + 1) : ''
-
-            storeCall('call', pre_apiStatus + 'apiStatus', { _api_status: 'waiting' },
-                () => storeCall(tp, func, payload,
-                    res => storeCall('call', pre_apiStatus + 'apiStatus', {
-                        ...res.payload, _api_status: 'isReady'
-                    }, next, _r.name)
-                    , _r.name)
-                , _r.name)
-        } else
-            storeCall(tp, func, payload, next, _r.name)
-    }
-
     const _r = mod.reducer
+
+    const _call = _call_api(_r)
+
     //** const _reducer = (state = _r.init, action) => {
     const _reducer = (state = { _: _r.init }, action) => {
 
@@ -112,92 +160,13 @@ export const utCreateElement = (mod, init) => {
 
     store.replaceReducer(combineReducers(reducers))
 
-    if (typeof mod.layout === 'function') {
-
-        if (!!mod.layout.prototype.isReactComponent)
-            // Class component
-            return connect(
-                state => ({
-                    //** _: state[_r.name],
-                    _: state[_r.name]._,
-                    name: _r.name,
-                    api: _call('api', state[_r.name]._),
-                    call: _call('none'),
-                    ...init
-                }))(mod.layout)
-
-        else {
-            return props => {
-                const init = useSelector(t => t[_r.name])
-                const param = {
-                    name: _r.name,
-                    api: _call('api', init._),
-                    call: _call('none')
-                }
-
-                if (!mod.content)
-                    mod.content = useForm({
-                        props: {
-                            ...param,
-                            init,
-                        }, ...mod.param
-                    }, mod.param?.extend)
-
-                return mod.layout({
-                    ...{ ...param, _: init._ }, ...init, ...props, ...mod.content
-                })
-            }
-        }
-    }
-
-    return mod.layout
+    return _connect(mod, init, _r)
 }
+
 
 export const utBindElement = (mod, init) => {
     console.log('...blinding ' + mod.name)
 
-    const _call = (tp) => (func, payload, next) =>
-        storeCall(tp, func, payload, next, mod.name)
-
-    if (typeof mod.layout === 'function') {
-
-        if (!!mod.layout.prototype.isReactComponent)
-            // Class component
-            return connect(
-                state => ({
-                    //** _: state[_r.name],
-                    _: state[mod.name]._,
-                    name: mod.name,
-                    api: _call('api'),
-                    call: _call('none'),
-                    ...init
-                }))(mod.layout)
-
-        else {
-            return props => {
-                const init = useSelector(t => t[mod.name])
-                const param = {
-                    name: mod.name,
-                    api: _call('api'),
-                    call: _call('none')
-                }
-
-                if (!mod.content)
-                    mod.content = useForm({
-                        props: {
-                            ...param,
-                            init,
-                        }, ...mod.param
-                    }, mod.param?.extend)
-
-                return mod.layout({
-                    ...{ ...param, _: init._ }, ...init, ...props, ...mod.content
-                })
-            }
-        }
-    }
-
-    return mod.layout
-
+    return _connect(mod, init, mod)
 }
 
