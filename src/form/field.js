@@ -83,7 +83,9 @@ export const utfield = _this => props => {
         return `Field id: ${id} is not defined!`
     }
 
-    const _labelPostion = labelPosition ?
+    //console.log(labelPosition)
+
+    const _labelPosition = labelPosition ?
         (labelPosition === 'top' ? Col :
             labelPosition === 'none' ? 'none' : Row) :
         _.isRow === true ? Row : _.isRow === false ? Col : _.isRow
@@ -105,12 +107,15 @@ export const utfield = _this => props => {
 
     const _group = {...drag, className}
 
+    console.log(_labelPosition)
+
     return (
-        _labelPostion === 'none' ?
-            <Group {..._group}>
-                {_this.Control(param)}
-            </Group> :
-            _labelPostion == Row ?
+        _labelPosition === 'none' ?
+            //<Group {..._group}>
+            //    {_this.Control(param)}
+            //</Group> :
+            _this.Control(param) :
+            _labelPosition == Row ?
                 <Group {...{ ..._group, as: Row }} >
                     <Label className={_f.mandate ? 'mandate' : ''} column sm={w1}>{label}</Label>
                     {_p.isPreview ?
