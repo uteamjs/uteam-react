@@ -1,6 +1,5 @@
-import React from 'react'
+import React, { Suspense, lazy } from 'react'
 import { Button } from "react-bootstrap"
-import { Suspense, lazy } from "react"
 import { Switch, Route, Redirect } from "react-router-dom"
 import { reduce } from "lodash"
 

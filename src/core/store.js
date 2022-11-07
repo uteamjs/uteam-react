@@ -52,13 +52,14 @@ export const storeDelete = ({ name }) => {
     store.replaceReducer(combineReducers(reducers))
 }
 
-const _call_api = _r =>  tp => (func, payload, next) => {
+const _call_api = _r => tp => (func, payload, next) => {
 
     if (process.env.API_STATUS === 'true' && tp === 'api') {
 
         const i = func.lastIndexOf('/')
         const pre_apiStatus = i > 0 ? func.substring(0, i + 1) : ''
 
+        /*
         storeCall('call', pre_apiStatus + 'apiStatus', { _api_status: 'waiting' },
             () => storeCall(tp, func, payload,
                 res => storeCall('call', pre_apiStatus + 'apiStatus', {
@@ -66,6 +67,12 @@ const _call_api = _r =>  tp => (func, payload, next) => {
                 }, next, _r.name)
                 , _r.name)
             , _r.name)
+        */
+
+        storeCall('call', pre_apiStatus + 'apiStatus', { _api_status: 'waiting' },
+            () => storeCall(tp, func, payload, next, _r.name)
+            , _r.name)
+
     } else
         storeCall(tp, func, payload, next, _r.name)
 }
@@ -142,6 +149,10 @@ export const utCreateElement = (mod, init) => {
                         console.log(err)
                         return state
                     }
+
+                    if (process.env.API_STATUS === 'true')
+                        state._.apiStatus = 'isReady'
+
                     return Object.assign({}, state)
                 }
             }

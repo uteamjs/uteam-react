@@ -107,7 +107,7 @@ export const utfield = _this => props => {
 
     const _group = {...drag, className}
 
-    console.log(_labelPosition)
+    //console.log(_labelPosition)
 
     return (
         _labelPosition === 'none' ?
