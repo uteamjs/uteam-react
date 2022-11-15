@@ -19,7 +19,7 @@ export const initFields = state =>
         (parent, key, link) => {
             link.label = link.label || capitalize(key)
             link.type = link.type || 'text'
-            link.value = link.value === undefined ? '' : link.value
+            link.value = link.value === undefined ? (link.type === 'typeahead' ? [] : '') : link.value
             return {
                 [key]: { link, parent }
             }

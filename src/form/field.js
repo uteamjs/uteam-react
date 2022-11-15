@@ -6,9 +6,10 @@ export const onChange = _this => ({ id, index, valid, type, key, _id }) => e => 
 
     const { call, api, _ } = _this.props
     const _f = _this.getField(id)
-    let val = type === 'toggle' ? e.target.checked : 
-                type === 'checkbox' ? _f.value :
-                    e.target.value
+    let val = type === 'toggle' ? e.target.checked :
+        type === 'checkbox' ? _f.value :
+            type === 'typeahead' ? e :
+                e.target.value
 
     //console.log(id, val)
 
@@ -105,7 +106,7 @@ export const utfield = _this => props => {
     delete param.customlabel
     delete param.drag
 
-    const _group = {...drag, className}
+    const _group = { ...drag, className }
 
     //console.log(_labelPosition)
 

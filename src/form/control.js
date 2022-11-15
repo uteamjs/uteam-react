@@ -6,6 +6,8 @@ import Toggle from 'react-toggle'
 import { AiOutlineHourglass } from 'react-icons/ai'
 import { isUndefined, isEmpty } from 'lodash'
 import 'react-toggle/style.css'
+import { Typeahead } from 'react-bootstrap-typeahead'
+import 'react-bootstrap-typeahead/css/Typeahead.css'
 
 const loop = (parent, child, cb) => child ?
     Object.entries(child).reduce((r, [key, link]) =>
@@ -124,6 +126,16 @@ export const utControl = _this => props => {
         case 'label':
             return <div aria-label={_f.label}>{value}</div>
 
+        case 'typeahead':
+            return <Typeahead 
+                    id={_id + '-typeahead'}
+                    labelKey='text'
+                    multiple 
+                    selected={value ?? []}
+                    placeholder={_f.placeholder}
+                    onChange={_Change({ id, index, type })}
+                    options={_f.options}
+            />
         case 'select':
             return (
                 <Form.Control as={type} value={value || ''}
