@@ -127,15 +127,16 @@ export const utControl = _this => props => {
             return <div aria-label={_f.label}>{value}</div>
 
         case 'typeahead':
-            return <Typeahead 
-                    id={_id + '-typeahead'}
-                    labelKey='text'
-                    multiple 
-                    selected={value ?? []}
-                    placeholder={_f.placeholder}
-                    onChange={_Change({ id, index, type })}
-                    options={_f.options}
+            return <Typeahead
+                id={_id + '-typeahead'}
+                labelKey='text'
+                multiple
+                defaultSelected={value}
+                placeholder={_f.placeholder}
+                onChange={_Change({ id, index, type })}
+                options={_f.options}
             />
+
         case 'select':
             return (
                 <Form.Control as={type} value={value || ''}
@@ -156,6 +157,7 @@ export const utControl = _this => props => {
             if (_isRead)
                 return value ? value.replace(/[^*]/gm, '•') : ''
 
+        case 'number':
         case 'text':
         case 'textarea':
             //return <Form.Control id='xxx' type='text' value={_.fields.name.value} onChange={e =>   
