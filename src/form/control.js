@@ -8,6 +8,7 @@ import { isUndefined, isEmpty } from 'lodash'
 import 'react-toggle/style.css'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import 'react-bootstrap-typeahead/css/Typeahead.css'
+import { DateRange, DatePicker } from './daterange'
 
 const loop = (parent, child, cb) => child ?
     Object.entries(child).reduce((r, [key, link]) =>
@@ -18,16 +19,34 @@ const loop = (parent, child, cb) => child ?
     : null
 
 export const utControlActions = {
-    change: (state, { id, val, index, _id }) => {
+    change: (state, { id, val, index, type, _id }) => {
         const _f = getField(state, id, index)
 
-        _f.value = val
+        _f.value = type === 'daterange' ? {
+            startDate: val.selection.startDate,
+            endDate: val.selection.endDate,
+            key: 'selection'
+        } : val
+
         _f.error = null
         state.focusid = _id
         state.isChanged = true
     },
 
-    checkbox: (state, { id, key, index }) => {
+    daterange: (state, { id, val, index }) => {
+        const _f = getField(state, id, index)
+
+        _f.value = {
+            startDate: val.selection.startDate,
+            endDate: val.selection.endDate,
+            key: 'selection'
+        }
+
+        _f.error = null
+        state.isChanged = true
+    },
+
+    checkbox: (state, { id, index, key }) => {
         const _f = getField(state, id, index)
 
         state.isChanged = true
@@ -47,7 +66,12 @@ export const utControlActions = {
             (parent, key, link) => {
                 link.label = link.label || capitalize(key)
                 link.type = link.type || 'text'
-                link.value = link.value === undefined ? '' : link.value
+                link.value = link.value === undefined ?
+                    (link.type === 'daterange' ? {
+                        startDate: new Date(),
+                        endDate: new Date(),
+                        key: 'selection'
+                    } : '') : link.value
                 return {
                     [key]: { link, parent }
                 }
@@ -150,8 +174,19 @@ export const utControl = _this => props => {
             )
 
         case 'datepicker':
-
             return _isRead ? <div>{value}</div> : <InputDate id={id} index={index} />
+
+        case 'daterange':
+            return <DateRange {...{
+                _f, _isRead, value,
+                onChange: _Change({ id, index, type })
+            }} />
+
+        case 'date':
+            return _isRead ? <div>{value}</div> : <DatePicker {...{
+                _f, _isRead, value,
+                onChange: _Change({ id, index, type })
+            }} />
 
         case 'password':
             if (_isRead)

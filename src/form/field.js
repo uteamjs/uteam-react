@@ -7,11 +7,9 @@ export const onChange = _this => ({ id, index, valid, type, key, _id }) => e => 
     const { call, api, _ } = _this.props
     const _f = _this.getField(id)
     let val = type === 'toggle' ? e.target.checked :
-        type === 'checkbox' ? _f.value :
-            type === 'typeahead' ? e :
+        type === 'checkbox' ? e.target.checked : // _f.value :
+            type === 'typeahead' || type === 'daterange' || type === 'date' ? e :
                 e.target.value
-
-    //console.log(id, val)
 
     if (_this.fieldOnChange({ id, index, key, type, value: val, e, call, api })) {
         if (valid) {
@@ -24,15 +22,16 @@ export const onChange = _this => ({ id, index, valid, type, key, _id }) => e => 
         }
 
         if (type == 'checkbox')
-            call('checkbox', { id, index, key })
-        else {
+            call('checkbox', { id, index, key, val })
 
+        else {
+            /*
             if (type == '_select') {
                 const obj = _f.list
                 val = Object.keys(obj).find(key => obj[key] === val)
-            }
+            }*/
 
-            call('change', { id, index, val: type === 'radio' ? key : val, _id })
+            call('change', { id, index, val: type === 'radio' ? key : val, _id, type })
         }
     }
 }
