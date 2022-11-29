@@ -151,7 +151,7 @@ export const utControl = _this => props => {
             return <div aria-label={_f.label}>{value}</div>
 
         case 'typeahead':
-            return <Typeahead
+            return value ? <Typeahead
                 id={_id + '-typeahead'}
                 labelKey='text'
                 multiple
@@ -159,7 +159,7 @@ export const utControl = _this => props => {
                 placeholder={_f.placeholder}
                 onChange={_Change({ id, index, type })}
                 options={_f.options}
-            />
+            /> : null
 
         case 'select':
             return (
