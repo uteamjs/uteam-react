@@ -96,10 +96,7 @@ export const api = store => next => action => {
         setTimeout(() => action.next(action))
 
       return next(action)
-
-
   }
-
 }
 
 
