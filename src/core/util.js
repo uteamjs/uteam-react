@@ -1,7 +1,8 @@
 import React, { Suspense, lazy } from 'react'
 import { Button } from "react-bootstrap"
 import { Switch, Route, Redirect } from "react-router-dom"
-import { reduce } from "lodash"
+import { reduce, each, isArray } from "lodash"
+import { toast } from 'react-toastify'
 
 export const capitalize = str =>
     str.charAt(0).toUpperCase() + str.slice(1)
@@ -165,4 +166,19 @@ export function getQuery(location) {
             a[k] = v
             return a
         }, {})
+}
+
+export function toastMessage(message) {
+    const type = {
+        'info': { autoClose: 1500, hideProgressBar: true },
+        'warn': {},
+        'error': { autoClose: false }
+    }
+    console.log(message)
+
+    each(type, (opt, tp) => {
+        console.log(message[tp])
+        if (isArray(message[tp]))
+            message[tp].forEach(t => toast[tp](t, opt))
+    })
 }

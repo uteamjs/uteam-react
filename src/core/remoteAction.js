@@ -1,6 +1,8 @@
 import fetch from 'isomorphic-fetch'
-import { each } from 'lodash'
-import { toast } from 'react-toastify'
+import { each, isArray } from 'lodash'
+import { toastMessage } from './util'
+
+//import { toast } from 'react-toastify'
 
 const getUploadBody = action => {
   const formData = new FormData(), { ref, type, payload } = action
@@ -41,8 +43,8 @@ export const api = store => next => action => {
           headers = { 'Content-Type': 'application/json' }
 
           const _token = localStorage.getItem('cfd61b8a7397fa7c10b2ae548f5bfaef')
-          
-          if(_token)
+
+          if (_token)
             headers.token = _token
 
           type = 'api'
@@ -57,23 +59,15 @@ export const api = store => next => action => {
           if (res.status >= 400)
             throw new Error('Bad response - status ' + res.status);
 
-          if(res.headers.token)
-            localStorage.setItem('cfd61b8a7397fa7c10b2ae548f5bfaef')
+          const _token = res.headers.get('token')
+
+          if (_token)
+            localStorage.setItem('cfd61b8a7397fa7c10b2ae548f5bfaef', _token)
 
           return res.json()
 
         }).then(data => {
-          const { message } = data
-          const type = {
-            'info': { autoClose: 1500, hideProgressBar: true },
-            'warn': {},
-            'error': { autoClose: false }
-          }
-
-          each(type, (opt, tp) => {
-            if (message[tp])
-              message[tp].forEach(t => toast[tp](t, opt))
-          })
+          toastMessage(data.message)
 
           if (action.next)
             setTimeout(() => action.next(data))
@@ -122,29 +116,3 @@ function error(store, message) {
     // })
   }
 }
-
-/*
-const getUploadBody = action => {
-  const formData = new FormData(), {ref, type, files = []} = action
-
-  formData.append('ref', ref)
-  formData.append('server', 'api')
-  formData.append('type', type)
-  files.forEach(f => {
-    formData.append('file', f)
-  })
-
-  return formData
-}
-
-const catchFtn = (store, next, action, msg) => e => {
-  console.log(msg)
-  console.log(e)
-  error(store, {
-    tp: 'error',
-    text: action.type + '- api',
-    error:[e.message]
-  })
-  return next(action);
-}*/
-
