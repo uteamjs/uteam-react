@@ -20,6 +20,7 @@ const getUploadBody = action => {
   return formData
 }
 
+
 export const api = store => next => action => {
   switch (action.server) {
     case 'api':
@@ -38,18 +39,26 @@ export const api = store => next => action => {
         } else {
           body = JSON.stringify(action)
           headers = { 'Content-Type': 'application/json' }
+
+          const _token = localStorage.getItem('cfd61b8a7397fa7c10b2ae548f5bfaef')
+          
+          if(_token)
+            headers.token = _token
+
           type = 'api'
         }
 
         fetch(process.env.API_URL + type, {
           credentials: 'include',
           method: 'POST',
-          headers, body
+          headers, body,
           //body: JSON.stringify(action)
-
         }).then(res => {
           if (res.status >= 400)
             throw new Error('Bad response - status ' + res.status);
+
+          if(res.headers.token)
+            localStorage.setItem('cfd61b8a7397fa7c10b2ae548f5bfaef')
 
           return res.json()
 
