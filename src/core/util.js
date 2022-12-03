@@ -1,7 +1,7 @@
 import React, { Suspense, lazy } from 'react'
 import { Button } from "react-bootstrap"
 import { Switch, Route, Redirect } from "react-router-dom"
-import { reduce, each, isArray } from "lodash"
+import { reduce, each, isArray, isString } from "lodash"
 import { toast } from 'react-toastify'
 
 export const capitalize = str =>
@@ -174,11 +174,13 @@ export function toastMessage(message) {
         'warn': {},
         'error': { autoClose: false }
     }
-    console.log(message)
 
-    each(type, (opt, tp) => {
-        console.log(message[tp])
-        if (isArray(message[tp]))
-            message[tp].forEach(t => toast[tp](t, opt))
-    })
+    if (isString(message))
+        toast.warn(message, type.warn)
+
+    else
+        each(type, (opt, tp) => {
+            if (isArray(message[tp]))
+                message[tp].forEach(t => toast[tp](t, opt))
+        })
 }
