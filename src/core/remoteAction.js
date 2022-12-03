@@ -56,17 +56,21 @@ export const api = store => next => action => {
           headers, body,
           //body: JSON.stringify(action)
         }).then(res => {
+          
           if (res.status >= 400)
-            throw new Error('Bad response - status ' + res.status);
+            console.log('Bad response - status ' + res.status)
 
-          const _token = res.headers.get('token')
+          else {
+            const _token = res.headers.get('token')
 
-          if (_token)
-            localStorage.setItem('cfd61b8a7397fa7c10b2ae548f5bfaef', _token)
+            if (_token)
+              localStorage.setItem('cfd61b8a7397fa7c10b2ae548f5bfaef', _token)
+          }
 
           return res.json()
 
         }).then(data => {
+          
           toastMessage(data.message)
 
           if (action.next)
