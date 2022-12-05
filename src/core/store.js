@@ -91,6 +91,7 @@ const _connect = (mod, init, _r) => {
                     //** _: state[_r.name],
                     _: state[_r.name]._,
                     name: _r.name,
+                    get: s => state[s]._,   // Get other packages'states
                     api: _call('api'),
                     call: _call('none'),
                     ...init
@@ -101,6 +102,7 @@ const _connect = (mod, init, _r) => {
                 const init = useSelector(t => t[mod.name])
                 const param = {
                     name: _r.name,
+                    get: s => state[s]._,
                     api: _call('api'),
                     call: _call('none')
                 }
