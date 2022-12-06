@@ -24,6 +24,7 @@ const getUploadBody = action => {
 
 
 export const api = store => next => action => {
+
   switch (action.server) {
     case 'api':
 
@@ -56,7 +57,7 @@ export const api = store => next => action => {
           headers, body,
           //body: JSON.stringify(action)
         }).then(res => {
-          
+
           if (res.status >= 400)
             console.log('Bad response - status ' + res.status)
 
@@ -70,7 +71,7 @@ export const api = store => next => action => {
           return res.json()
 
         }).then(data => {
-          
+
           toastMessage(data.message)
 
           if (action.next)
@@ -88,6 +89,15 @@ export const api = store => next => action => {
         })
       }
       break;
+
+    case 'none':
+    case 'call':
+      const m = action.type.match(/\/alert[^\/]*$/)
+
+      if (m) 
+        toastMessage(action.payload)
+
+    // continue to below
 
     default:
       if (action.next)

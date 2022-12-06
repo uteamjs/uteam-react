@@ -182,5 +182,9 @@ export function toastMessage(message) {
         each(type, (opt, tp) => {
             if (isArray(message[tp]))
                 message[tp].forEach(t => toast[tp](t, opt))
+
+            else if(isString(message[tp]))
+                toast[tp](message[tp], opt)
+
         })
 }
