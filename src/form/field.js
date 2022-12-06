@@ -136,7 +136,7 @@ const preViewPending = ({ w2, _f, _this, param }) => {
 
     return (<>
         <Col sm={_w2}>
-            {_this.Control({ ...param, st: 'active', irRead: true })}
+            {_this.Control({ ...param, st: 'active', isRead: true })}
         </Col>
         <Col sm={_w2}>
             {_f.pending ?
