@@ -4,6 +4,7 @@ import { Popover, OverlayTrigger } from 'react-bootstrap'
 import { IoIosCalendar } from 'react-icons/io'
 import { getField } from './util'
 import range from 'lodash/range'
+import { RiDeleteBin2Line } from 'react-icons/ri'
 
 const _listMonth = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -131,7 +132,9 @@ export const utInputDate = _this => ({ option, item, id, index, yearStart = 20 }
                 label: _field.label + '_year',
                 ..._props
             }} />
-            <div onClick={() => call('resetDate', { id, index })} style={styleResetButton}>X</div>
+            <RiDeleteBin2Line size={24}
+                onClick={() => call('resetDate', { id, index })} 
+                style={styleResetButton}/>
             <OverlayTrigger trigger="click"
                 show={_field.isDatePicker || false}
                 placement="right" overlay={popover({ call, id, index, value })}>
