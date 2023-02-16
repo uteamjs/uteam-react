@@ -154,8 +154,8 @@ export const utControl = _this => props => {
             return value ?
                 <Typeahead
                     id={_id + '-typeahead'}
-                    labelKey='text'
-                    multiple
+                    labelKey={_f.key || 'text'}
+                    multiple={!_f.single}
                     disabled={_isRead}
                     defaultSelected={value}
                     placeholder={_f.placeholder}
