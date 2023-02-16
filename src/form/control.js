@@ -158,6 +158,8 @@ export const utControl = _this => props => {
                     multiple={!_f.single}
                     disabled={_isRead}
                     defaultSelected={value}
+                    allowNew={_f.allowNew || false}
+                    clearButton={_f.clearButton || false}
                     placeholder={_f.placeholder}
                     onChange={_Change({ id, index, type })}
                     options={_f.options}
