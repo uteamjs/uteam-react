@@ -83,17 +83,21 @@ export const utfield = _this => props => {
         return `Field id: ${id} is not defined!`
     }
 
-    //console.log(labelPosition)
+    if (_f.hide) return null
+
+
 
     const _labelPosition = labelPosition ?
         (labelPosition === 'top' ? Col :
             labelPosition === 'none' ? 'none' : Row) :
         _.isRow === true ? Row : _.isRow === false ? Col : _.isRow
 
-    const { label = customlabel, type, error } = id ? _f : {}
+    let { label, type, error } = (id ? _f : {})
     let [w1, w2] = labelWidth || _.labelWidth[no - 1]
 
     //const param = { id, index, children, elem, st, append, isRead: readOnly, onKeyPress }
+
+    if (customlabel !== undefined) label = customlabel
 
     const param = { ...props, isRead: readOnly }
     const className = (param.className || '') + ''
@@ -109,7 +113,6 @@ export const utfield = _this => props => {
 
     //console.log(_labelPosition)
 
-    if(param.hide) return null
 
     return (
         _labelPosition === 'none' ?
