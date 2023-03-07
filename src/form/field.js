@@ -109,6 +109,8 @@ export const utfield = _this => props => {
 
     //console.log(_labelPosition)
 
+    if(param.hide) return null
+
     return (
         _labelPosition === 'none' ?
             //<Group {..._group}>
