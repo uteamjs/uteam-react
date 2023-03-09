@@ -46,11 +46,11 @@ export const getInitField = _this => (id, tp = 'link') => {
     return fieldList[id] ? fieldList[id][tp] || {} : {}
 }
 
-const EditField = ({ sm = 12, error, elem }) =>
+const EditField = ({ sm = 12, error, elem, children }) =>
     <Col sm={sm}>
         <div className='field-append'>
             {elem}
-            {/*this.Control({ id, index, children, elem, st, append })*/}
+            {children}
         </div>
         <div className='invalid-feedback' style={{ display: 'block' }}>
             {error}
@@ -125,7 +125,7 @@ export const utfield = _this => props => {
                     <Label className={_f.mandate ? 'mandate' : ''} column sm={w1}>{label}</Label>
                     {_p.isPreview ?
                         preViewPending({ w2, _f, _this, param }) :
-                        <EditField sm={w2} error={error} elem={_this.Control(param)} />
+                        <EditField sm={w2} error={error} elem={_this.Control(param)} children={children}/>
                     }
                 </Group> :
                 <Group {..._group}>

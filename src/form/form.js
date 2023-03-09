@@ -16,6 +16,7 @@ import 'react-day-picker/lib/style.css'
 import '../css/form.sass'
 
 export class utform extends Component {
+
     Section = utSection(this)
 
     sectionSave = utSectionSave(this)
