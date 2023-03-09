@@ -46,11 +46,12 @@ export const getInitField = _this => (id, tp = 'link') => {
     return fieldList[id] ? fieldList[id][tp] || {} : {}
 }
 
-const EditField = ({ sm = 12, error, elem, children }) =>
+//             {/*children*/}
+
+const EditField = ({ sm = 12, error, elem }) =>
     <Col sm={sm}>
         <div className='field-append'>
             {elem}
-            {children}
         </div>
         <div className='invalid-feedback' style={{ display: 'block' }}>
             {error}
@@ -60,7 +61,7 @@ const EditField = ({ sm = 12, error, elem, children }) =>
 const { Group, Label } = Form
 
 export const utfield = _this => props => {
-    const { children, id, index,
+    const { id, index,
         labelWidth, no = 1,
         labelPosition,
         elem, append,
@@ -125,7 +126,7 @@ export const utfield = _this => props => {
                     <Label className={_f.mandate ? 'mandate' : ''} column sm={w1}>{label}</Label>
                     {_p.isPreview ?
                         preViewPending({ w2, _f, _this, param }) :
-                        <EditField sm={w2} error={error} elem={_this.Control(param)} children={children}/>
+                        <EditField sm={w2} error={error} elem={_this.Control(param)} append={append} />
                     }
                 </Group> :
                 <Group {..._group}>
