@@ -224,6 +224,20 @@ export const utControl = _this => props => {
                 _props.rows = props.rows || 3
             }
 
+            if (_f.format) {
+                const _n = _f.format.split(',')
+                const _l = _n.length
+
+                if (_l >= 1 && _n[0] === 'Text' && type !== 'number') {
+                    if (_l >= 2) {
+                        _props.maxLength = _n[1]
+
+                        if (_l >= 3)
+                            _props.style = { width: (parseInt(_n[2]) * 14) + 'px' }
+                    }
+                }
+            }
+
             if (hint) _props.placeholder = hint
 
             return (<>
