@@ -233,7 +233,7 @@ export const utControl = _this => props => {
                         _props.maxLength = _n[1]
 
                         if (_l >= 3)
-                            _props.style = { width: (parseInt(_n[2]) * 14) + 'px' }
+                            _props.style = { width: (parseInt(_n[2]) * 8 + 20) + 'px' }
                     }
                 }
             }

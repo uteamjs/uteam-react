@@ -48,9 +48,9 @@ export const getInitField = _this => (id, tp = 'link') => {
 
 //             {/*children*/}
 
-const EditField = ({ sm = 12, error, elem }) =>
+const EditField = ({ sm = 12, error, elem, append}) =>
     <Col sm={sm}>
-        <div className='field-append'>
+        <div className={append ? 'field-append' : ''}>
             {elem}
         </div>
         <div className='invalid-feedback' style={{ display: 'block' }}>
@@ -65,6 +65,7 @@ export const utfield = _this => props => {
         labelWidth, no = 1,
         labelPosition,
         elem, append,
+        pack = false,           // Pack the field for append
         hide,
         readOnly,
         onKeyPress,
@@ -121,18 +122,23 @@ export const utfield = _this => props => {
             //    {_this.Control(param)}
             //</Group> :
             _this.Control(param) :
-            _labelPosition == Row ?
-                <Group {...{ ..._group, as: Row }} >
-                    <Label className={_f.mandate ? 'mandate' : ''} column sm={w1}>{label}</Label>
-                    {_p.isPreview ?
-                        preViewPending({ w2, _f, _this, param }) :
-                        <EditField sm={w2} error={error} elem={_this.Control(param)} append={append} />
-                    }
-                </Group> :
-                <Group {..._group}>
+            pack === 'true' ?
+                <>
                     <Label className={_f.mandate ? 'mandate' : ''}>{label}</Label>
                     {_this.Control(param)}
-                </Group>
+                </> :
+                _labelPosition == Row ?
+                    <Group {...{ ..._group, as: Row }} >
+                        <Label className={_f.mandate ? 'mandate' : ''} column sm={w1}>{label}</Label>
+                        {_p.isPreview ?
+                            preViewPending({ w2, _f, _this, param }) :
+                            <EditField sm={w2} error={error} elem={_this.Control(param)} append={append} />
+                        }
+                    </Group> :
+                    <Group {..._group}>
+                        <Label className={_f.mandate ? 'mandate' : ''}>{label}</Label>
+                        {_this.Control(param)}
+                    </Group>
     )
 }
 
