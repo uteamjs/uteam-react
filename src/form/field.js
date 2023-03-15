@@ -48,7 +48,7 @@ export const getInitField = _this => (id, tp = 'link') => {
 
 //             {/*children*/}
 
-const EditField = ({ sm = 12, error, elem, append}) =>
+const EditField = ({ sm = 12, error, elem, append }) =>
     <Col sm={sm}>
         <div className={append ? 'field-append' : ''}>
             {elem}
@@ -124,19 +124,19 @@ export const utfield = _this => props => {
             _this.Control(param) :
             pack === 'true' ?
                 <>
-                    <Label className={_f.mandate ? 'mandate' : ''}>{label}</Label>
+                    {label === 'null' ? null : <Label className={_f.mandate ? 'mandate' : ''}>{label}</Label>}
                     {_this.Control(param)}
                 </> :
                 _labelPosition == Row ?
                     <Group {...{ ..._group, as: Row }} >
-                        <Label className={_f.mandate ? 'mandate' : ''} column sm={w1}>{label}</Label>
+                        <Label className={_f.mandate ? 'mandate' : ''} column sm={w1}>{label === 'null' ? null : label}</Label>
                         {_p.isPreview ?
                             preViewPending({ w2, _f, _this, param }) :
                             <EditField sm={w2} error={error} elem={_this.Control(param)} append={append} />
                         }
                     </Group> :
                     <Group {..._group}>
-                        <Label className={_f.mandate ? 'mandate' : ''}>{label}</Label>
+                        <Label className={_f.mandate ? 'mandate' : ''}>{label === 'null' ? null : label}</Label>
                         {_this.Control(param)}
                     </Group>
     )
