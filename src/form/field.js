@@ -52,11 +52,13 @@ const EditField = ({ sm = 12, error, elem, append }) =>
     <Col sm={sm}>
         <div className={append ? 'field-append' : ''}>
             {elem}
+            {append}
         </div>
         <div className='invalid-feedback' style={{ display: 'block' }}>
             {error}
         </div>
     </Col>
+
 
 const { Group, Label } = Form
 
@@ -137,7 +139,12 @@ export const utfield = _this => props => {
                     </Group> :
                     <Group {..._group}>
                         <Label className={_f.mandate ? 'mandate' : ''}>{label === 'null' ? null : label}</Label>
-                        {_this.Control(param)}
+                        {append ?
+                            <div className='field-append'>
+                                {_this.Control(param)}
+                                {append}
+                            </div> :
+                            _this.Control(param)}
                     </Group>
     )
 }

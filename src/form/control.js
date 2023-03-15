@@ -240,14 +240,11 @@ export const utControl = _this => props => {
 
             if (hint) _props.placeholder = hint
 
-            return (<>
-                <Form.Control {...{
-                    ..._props,
-                    key: 'f=' + id,
-                    'aria-label': _f.label
-                }} />
-                {append}
-            </>)
+            return <Form.Control {...{
+                ..._props,
+                key: 'f=' + id,
+                'aria-label': _f.label
+            }} />
 
         default:
             if (_this.customfield[type]) {
