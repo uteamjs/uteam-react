@@ -4,7 +4,7 @@ import { capitalize } from '..'
 import { getField } from './util'
 import Toggle from 'react-toggle'
 import { AiOutlineHourglass } from 'react-icons/ai'
-import { isUndefined, isEmpty } from 'lodash'
+import { isUndefined, isEmpty, isObject } from 'lodash'
 import 'react-toggle/style.css'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import 'react-bootstrap-typeahead/css/Typeahead.css'
@@ -141,7 +141,7 @@ export const utControl = _this => props => {
                         key={key + i}
                         id={_id + '-' + key}
                         type={type}
-                        label={choice.child ? createElement(choice.child) : choice}
+                        label={isObject(choice) && choice.child ? createElement(choice.child) : choice}
                         onChange={_Change({ id, key, index, type })} >
                     </Form.Check>
                 ) : null}
