@@ -230,10 +230,10 @@ export const utControl = _this => props => {
 
                 if (_l >= 1 && _n[0] === 'Text' && type !== 'number') {
                     if (_l >= 2) {
-                        _props.maxLength = _n[1]
+                        _props.maxLength = _n[2]
 
                         if (_l >= 3)
-                            _props.style = { width: (parseInt(_n[2]) * 8 + 20) + 'px' }
+                            _props.style = { width: (parseInt(_n[1]) * 8 + 20) + 'px' }
                     }
                 }
             }
