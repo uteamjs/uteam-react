@@ -107,7 +107,7 @@ export const utControl = _this => props => {
     const _Change = onChange || _this.onChange
     const _KeyDown = onKeyDown || _this.onKeyDown
     const _KeyPress = onKeyPress || _this.onKeyPress
-    const _isRead = isUndefined(isRead) ? !(isEmpty(_p) ? _.isEdit : _p.isEdit) : isRead
+    const _isRead = isUndefined(isRead) ? !(isEmpty(_p) ? _.isEdit : _p.isEdit) : (isRead === 'true' || isRead)
     const _id = name + '-' + id + '-' + st
 
     //if(id== 'search') {
@@ -167,10 +167,22 @@ export const utControl = _this => props => {
                 : null
 
         case 'select':
+
+            let style = {}
+
+            if (_f.format) {
+                const _n = _f.format.split(',')
+                const _l = _n.length
+
+                if (_l > 0)
+                    style.width = (parseInt(_n[0]) * 8 + 20) + 'px'
+            }
+
             return (
                 <Form.Control as={type} value={value || ''}
                     disabled={_isRead}
                     aria-label={_f.label}
+                    style={style}
                     onChange={_Change({ id, index, type })}>
                     {list || _list ? Object.entries(list || _list).map(([key, choice], i) =>
                         <option key={key + i} value={key}>{choice}</option>
@@ -227,14 +239,13 @@ export const utControl = _this => props => {
             if (_f.format) {
                 const _n = _f.format.split(',')
                 const _l = _n.length
-
-                if (_l >= 1 && _n[0] === 'Text' && type !== 'number') {
-                    if (_l >= 2) {
+                
+                if (_l >= 2) {
+                    if (_n[0] === 'Text')
                         _props.maxLength = _n[2]
 
-                        if (_l >= 3)
-                            _props.style = { width: (parseInt(_n[1]) * 8 + 20) + 'px' }
-                    }
+                    if (_l >= 3)
+                        _props.style = { width: (parseInt(_n[1]) * 8 + 20) + 'px' }
                 }
             }
 
