@@ -87,7 +87,7 @@ export const utfield = _this => props => {
         return `Field id: ${id} is not defined!`
     }
 
-    if (_f.hide) return null
+    if (_f.hide === 'true' || _f.hide) return null
 
 
 
