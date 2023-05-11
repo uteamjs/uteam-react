@@ -45,8 +45,12 @@ export const api = store => next => action => {
 
           const _token = localStorage.getItem('cfd61b8a7397fa7c10b2ae548f5bfaef')
 
-          if (_token)
-            headers.token = _token
+          if (_token) {
+            if(process.env.JWT_BEARER.toLowerCase() === 'true')
+              headers.Authorization = 'Bearer ' + _token
+            else
+              headers.token = _token
+          }
 
           type = 'api'
         }
@@ -58,17 +62,17 @@ export const api = store => next => action => {
           //body: JSON.stringify(action)
         }).then(res => {
 
-          if (res.status >= 400)
-            console.log('Bad response - status ' + res.status)
+          if (res.status >= 400) {
+            throw new Error('Bad response - status ' + res.status)
 
-          else {
+          } else {
             const _token = res.headers.get('token')
 
             if (_token)
               localStorage.setItem('cfd61b8a7397fa7c10b2ae548f5bfaef', _token)
-          }
 
-          return res.json()
+            return res.json()
+          }
 
         }).then(data => {
 
