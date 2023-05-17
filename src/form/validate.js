@@ -62,3 +62,5 @@ export const check = ({val, o}) => {
 
     return error
 }
+
+exports.check = checks
