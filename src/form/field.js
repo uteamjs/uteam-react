@@ -1,6 +1,7 @@
 import React from 'react'
 import { Form, Row, Col } from 'react-bootstrap'
 import { isEmpty } from 'lodash'
+import { check } from './validate'
 
 export const onChange = _this => ({ id, index, valid, type, key, _id }) => e => {
 
