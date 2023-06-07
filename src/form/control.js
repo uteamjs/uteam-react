@@ -86,7 +86,7 @@ export const utControl = _this => props => {
     const _ = _this.props._ || _this.props.init._
 
     const { name, call } = _this.props
-    const { st = 'value', id, index, children, elem, isRead,
+    let { st = 'value', id, index, children, elem, isRead,
         onChange, onKeyDown, onKeyPress, append } = props
     const _p = _this.getField(id, 'parent')
     const _f = _this.getField(id)
@@ -94,6 +94,8 @@ export const utControl = _this => props => {
     let value = id ? _f[st] : null
     let _list
     const isIndex = !isUndefined(index)
+
+    isRead = isRead || _f.isRead
 
     if (isIndex) {
         if (_p.type === 'multi-group') {
