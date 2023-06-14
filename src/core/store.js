@@ -162,6 +162,8 @@ export const utCreateElement = (mod, init) => {
                     if (process.env.API_STATUS === 'true')
                         state._.apiStatus = 'isReady'
 
+                    _setStatus('ready')
+
                     return Object.assign({}, state)
                 }
             }
