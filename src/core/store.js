@@ -52,6 +52,11 @@ export const storeDelete = ({ name }) => {
     store.replaceReducer(combineReducers(reducers))
 }
 
+const _setStatus = (val = 'loading') => {
+    const e = document.getElementById('__pagestatus__')
+    if(e) e.innerText = val
+}
+
 const _call_api = _r => tp => (func, payload, next) => {
 
     if (process.env.API_STATUS === 'true' && tp === 'api') {
@@ -73,8 +78,10 @@ const _call_api = _r => tp => (func, payload, next) => {
             () => storeCall(tp, func, payload, next, _r.name)
             , _r.name)
 
-    } else
+    } else {
+        _setStatus('loading')
         storeCall(tp, func, payload, next, _r.name)
+    }
 }
 
 
