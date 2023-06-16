@@ -202,7 +202,7 @@ export const utControl = _this => props => {
             }} />
 
         case 'date':
-            return _isRead ? <div>{value}</div> : <DatePicker {...{
+            return _isRead ? <div aria-label={_f.label}>{value}</div> : <DatePicker {...{
                 _f, _isRead, value,
                 onChange: _Change({ id, index, type })
             }} />
@@ -218,7 +218,7 @@ export const utControl = _this => props => {
             //    call('change', {id, val:e.target.value})} />
 
             if (_isRead)
-                return <div>{value}</div>
+                return <div aria-label={_f.label}>{value}</div>
 
             delete props.isRead
 
