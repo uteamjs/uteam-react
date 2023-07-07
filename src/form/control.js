@@ -193,14 +193,15 @@ export const utControl = _this => props => {
                         aria-label={_f.label}
                         style={style}
                         onChange={_Change({ id, index, type })}>
-                        isArray(lst) ?
-                        {lst.map(([key, choice], i) =>
-                            <option key={key + i} value={key}>{choice}</option>
-                        )
-                        } :
-                        {lst ? Object.entries(lst).map(([key, choice], i) =>
-                            <option key={key + i} value={key}>{choice}</option>
-                        ) : null}
+                        {isArray(lst) ?
+                            lst.map(([key, choice], i) =>
+                                <option key={key + i} value={key}>{choice}</option>
+                            )
+                            :
+                            lst ? Object.entries(lst).map(([key, choice], i) =>
+                                <option key={key + i} value={key}>{choice}</option>
+                            ) : null
+                        }
                     </select>
                 }
             }
