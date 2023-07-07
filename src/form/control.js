@@ -4,7 +4,7 @@ import { capitalize } from '..'
 import { getField } from './util'
 import Toggle from 'react-toggle'
 import { AiOutlineHourglass } from 'react-icons/ai'
-import { isUndefined, isEmpty, isObject } from 'lodash'
+import { isUndefined, isEmpty, isObject, isArray } from 'lodash'
 import 'react-toggle/style.css'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import 'react-bootstrap-typeahead/css/Typeahead.css'
@@ -181,11 +181,13 @@ export const utControl = _this => props => {
 
                 const _i = parseInt(_n[1])
 
-                if(_i > 1) 
+                if(_i > 1) {
+                    const _val = isArray(value) ? value : [value]
+
                     return <select multiple="multiple"
                         className='form-control'
                         row={_n[1]}
-                        value={value || ''}
+                        value={_val || []}
                         disabled={_isRead}
                         aria-label={_f.label}
                         style={style}
@@ -194,6 +196,7 @@ export const utControl = _this => props => {
                             <option key={key + i} value={key}>{choice}</option>
                         ) : null}
                     </select>
+                }
 
 
             }
