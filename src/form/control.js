@@ -181,10 +181,11 @@ export const utControl = _this => props => {
 
                 const _i = parseInt(_n[1])
 
-                if(_i > 1) {
+                if (_i > 1) {
                     const _val = isArray(value) ? value : [value]
+                    const lst = list || _list
 
-                    return <select multiple="multiple"
+                    return <select multiple="true"
                         className='form-control'
                         row={_n[1]}
                         value={_val || []}
@@ -192,13 +193,16 @@ export const utControl = _this => props => {
                         aria-label={_f.label}
                         style={style}
                         onChange={_Change({ id, index, type })}>
-                        {list || _list ? Object.entries(list || _list).map(([key, choice], i) =>
+                        isArray(lst) ?
+                        {lst.map(([key, choice], i) =>
+                            <option key={key + i} value={key}>{choice}</option>
+                        )
+                        } :
+                        {lst ? Object.entries(lst).map(([key, choice], i) =>
                             <option key={key + i} value={key}>{choice}</option>
                         ) : null}
                     </select>
                 }
-
-
             }
 
             return (
@@ -262,7 +266,7 @@ export const utControl = _this => props => {
             if (_f.format) {
                 const _n = _f.format.split(',')
                 const _l = _n.length
-                
+
                 if (_l >= 2) {
                     if (_n[0] === 'Text')
                         _props.maxLength = _n[2]
