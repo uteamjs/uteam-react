@@ -21,12 +21,36 @@ const loop = (parent, child, cb) => child ?
 export const utControlActions = {
     change: (state, { id, val, index, type, _id }) => {
         const _f = getField(state, id, index)
+        let isSingle = true
 
-        _f.value = type === 'daterange' ? {
-            startDate: val.selection.startDate,
-            endDate: val.selection.endDate,
-            key: 'selection'
-        } : val
+        if (_f.type === 'select' && _f.format) {
+
+            const m = _f.format.match(/^\d*?,(\d*?),(.*)$/) // eg 25,5,False
+
+            if (m && parseInt(m[1]) > 1 && m[2] === 'True') { // Multiple select
+                if (isString(_f.value))
+                    _f.value = [..._f.value.split(',')]
+
+                if (_f.value.length > 0 && typeof _f.value[0] === 'number')
+                    val = parseInt(val)
+
+                let i = _f.value.indexOf(val)
+
+                if (i < 0)
+                    _f.value.push(val)
+                else
+                    _f.value.splice(i, 1)
+
+                isSingle = false
+            }
+        }
+
+        if (isSingle)
+            _f.value = type === 'daterange' ? {
+                startDate: val.selection.startDate,
+                endDate: val.selection.endDate,
+                key: 'selection'
+            } : val
 
         _f.error = null
         state.focusid = _id
@@ -171,6 +195,7 @@ export const utControl = _this => props => {
         case 'select':
 
             let style = {}
+            let lst = list || _list
 
             if (_f.format) {
                 const _n = _f.format.split(',')
@@ -183,9 +208,8 @@ export const utControl = _this => props => {
 
                 if (_i > 1) {
                     const _val = isArray(value) ? value : [value]
-                    const lst = list || _list
 
-                    return <select multiple="true"
+                    return <select multiple="multiple"
                         className='form-control'
                         row={_n[1]}
                         value={_val || []}
@@ -195,11 +219,11 @@ export const utControl = _this => props => {
                         onChange={_Change({ id, index, type })}>
                         {isArray(lst) ?
                             lst.map(([key, choice], i) =>
-                                <option key={key + i} value={key}>{choice}</option>
+                                <option key={key + '-' + i} value={key}>{choice}</option>
                             )
                             :
                             lst ? Object.entries(lst).map(([key, choice], i) =>
-                                <option key={key + i} value={key}>{choice}</option>
+                                <option key={key + '-' + i} value={key}>{choice}</option>
                             ) : null
                         }
                     </select>
@@ -212,11 +236,12 @@ export const utControl = _this => props => {
                     aria-label={_f.label}
                     style={style}
                     onChange={_Change({ id, index, type })}>
-                    {list || _list ? Object.entries(list || _list).map(([key, choice], i) =>
-                        <option key={key + i} value={key}>{choice}</option>
+                    {lst ? Object.entries(lst).map(([key, choice], i) =>
+                        <option key={key + '-' + i} value={key}>{choice}</option>
                     ) : null}
                 </Form.Control>
             )
+
 
         case 'datepicker':
             return _isRead ? <div>{value}</div> : <InputDate id={id} index={index} />
