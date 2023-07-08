@@ -28,8 +28,8 @@ export const utControlActions = {
             const m = _f.format.match(/^\d*?,(\d*?),(.*)$/) // eg 25,5,False
 
             if (m && parseInt(m[1]) > 1 && m[2] === 'True') { // Multiple select
-                if (isString(_f.value))
-                    _f.value = [..._f.value.split(',')]
+                if (!isArray(_f.value))
+                    _f.value = [_f.value]
 
                 if (_f.value.length > 0 && typeof _f.value[0] === 'number')
                     val = parseInt(val)
