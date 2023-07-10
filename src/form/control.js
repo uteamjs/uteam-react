@@ -202,12 +202,14 @@ export const utControl = _this => props => {
                 const _l = _n.length
 
                 if (_l > 0)
-                    style.width = (parseInt(_n[0]) * 8 + 20) + 'px'
-
+                    style.width = (parseInt(_n[0]) * 10 + 20) + 'px'
+                    
                 const _i = parseInt(_n[1])
 
                 if (_i > 1) {
                     const _val = isArray(value) ? value : [value]
+
+                    style.height = _i * 20 + 6 + 'px'
 
                     return <select multiple="multiple"
                         className='form-control'

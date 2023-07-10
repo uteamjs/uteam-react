@@ -46,7 +46,7 @@ export const api = store => next => action => {
           const _token = localStorage.getItem('cfd61b8a7397fa7c10b2ae548f5bfaef')
 
           if (_token) {
-            if(process.env.JWT_BEARER.toLowerCase() === 'true')
+            if (process.env.JWT_BEARER.toLowerCase() === 'true')
               headers.Authorization = 'Bearer ' + _token
             else
               headers.token = _token
@@ -76,6 +76,11 @@ export const api = store => next => action => {
 
         }).then(data => {
 
+          if (data.bear_token_) {
+            localStorage.setItem('cfd61b8a7397fa7c10b2ae548f5bfaef', data.bear_token_)
+            delete data.bear_token_
+          }
+
           toastMessage(data.message)
 
           if (action.next)
@@ -98,7 +103,7 @@ export const api = store => next => action => {
     case 'call':
       const m = action.type.match(/\/alert[^\/]*$/)
 
-      if (m) 
+      if (m)
         toastMessage(action.payload)
 
     // continue to below
