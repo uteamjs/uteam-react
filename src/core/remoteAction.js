@@ -1,5 +1,4 @@
 import fetch from 'isomorphic-fetch'
-import { each, isArray } from 'lodash'
 import { toastMessage } from './util'
 
 //import { toast } from 'react-toastify'
@@ -46,7 +45,7 @@ export const api = store => next => action => {
           const _token = localStorage.getItem('cfd61b8a7397fa7c10b2ae548f5bfaef')
 
           if (_token) {
-            if (process.env.JWT_BEARER.toLowerCase() === 'true')
+            if (process.env.JWT_BEARER?.toLowerCase() === 'true')
               headers.Authorization = 'Bearer ' + _token
             else
               headers.token = _token
