@@ -197,13 +197,22 @@ export const utControl = _this => props => {
             let style = {}
             let lst = list || _list
 
+            const optionList = () => isArray(lst) ?
+                lst.map(([key, choice], i) =>
+                    <option key={key + '-' + i} value={key}>{choice}</option>
+                )
+                :
+                lst ? Object.entries(lst).map(([key, choice], i) =>
+                    <option key={key + '-' + i} value={key}>{choice}</option>
+                ) : null
+
             if (_f.format) {
                 const _n = _f.format.split(',')
                 const _l = _n.length
 
                 if (_l > 0)
                     style.width = (parseInt(_n[0]) * 10 + 20) + 'px'
-                    
+
                 const _i = parseInt(_n[1])
 
                 if (_i > 1) {
@@ -219,15 +228,7 @@ export const utControl = _this => props => {
                         aria-label={_f.label}
                         style={style}
                         onChange={_Change({ id, index, type })}>
-                        {isArray(lst) ?
-                            lst.map(([key, choice], i) =>
-                                <option key={key + '-' + i} value={key}>{choice}</option>
-                            )
-                            :
-                            lst ? Object.entries(lst).map(([key, choice], i) =>
-                                <option key={key + '-' + i} value={key}>{choice}</option>
-                            ) : null
-                        }
+                        {optionList()}
                     </select>
                 }
             }
@@ -238,9 +239,7 @@ export const utControl = _this => props => {
                     aria-label={_f.label}
                     style={style}
                     onChange={_Change({ id, index, type })}>
-                    {lst ? Object.entries(lst).map(([key, choice], i) =>
-                        <option key={key + '-' + i} value={key}>{choice}</option>
-                    ) : null}
+                    {optionList()}
                 </Form.Control>
             )
 
