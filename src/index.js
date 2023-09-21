@@ -7,6 +7,7 @@ export * from './form/table'
 export * from './form/util'
 export * from './form/formhook'
 export * from './form/validate'
+export * from './form/tabbar'
 
 import style from './css/form.module.sass'
 export { style }
