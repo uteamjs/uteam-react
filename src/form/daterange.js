@@ -7,6 +7,8 @@ import { DateRangePicker, Calendar } from 'react-date-range'
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import moment from 'moment'
+import SingleDatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css"
 
 const formatdate = datestring => moment(datestring).format('YYYY-MM-DD')
 
@@ -16,6 +18,8 @@ const _default = {
     endDate: new Date(),
     key: 'selection'
 }
+
+
 
 export const DateRange = ({ _f, _isRead, value, onChange }) => {
 
@@ -72,3 +76,17 @@ export const DatePicker = ({ _f, _isRead, value, onChange }) => {
 
     </div>
 }
+
+import { hk } from './holidays'
+
+export const SingleDate = ({ _f, _isRead, value, onChange }) => {
+    if (value == '' || value == null) value = new Date()
+
+    return <SingleDatePicker selected={value} onChange={v =>
+        onChange({ target: { value: v } })}
+        dateFormat={_f.format ?? 'dd/MM/yyyy'}
+        holidays={_f.holidays ?? hk}
+
+    />
+}
+

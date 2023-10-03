@@ -7,8 +7,8 @@ import { AiOutlineHourglass } from 'react-icons/ai'
 import { isUndefined, isEmpty, isObject, isArray, isString } from 'lodash'
 import 'react-toggle/style.css'
 import { Typeahead } from 'react-bootstrap-typeahead'
-import 'react-bootstrap-typeahead/css/Typeahead.css'
-import { DateRange, DatePicker } from './daterange'
+import { DateRange, DatePicker, SingleDate } from './daterange'
+
 
 const loop = (parent, child, cb) => child ?
     Object.entries(child).reduce((r, [key, link]) =>
@@ -243,6 +243,13 @@ export const utControl = _this => props => {
                 </Form.Control>
             )
 
+
+        case 'singledatepicker':
+
+            return  <SingleDate {...{
+                _f, _isRead, value,
+                onChange: _Change({ id, index, type }) 
+            }}/>
 
         case 'datepicker':
             return _isRead ? <div>{value}</div> : <InputDate id={id} index={index} />
