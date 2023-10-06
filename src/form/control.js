@@ -8,6 +8,7 @@ import { isUndefined, isEmpty, isObject, isArray, isString } from 'lodash'
 import 'react-toggle/style.css'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import { DateRange, DatePicker, SingleDate } from './daterange'
+import 'react-bootstrap-typeahead/css/Typeahead.css'
 
 
 const loop = (parent, child, cb) => child ?
