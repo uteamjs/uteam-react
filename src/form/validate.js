@@ -1,3 +1,4 @@
+import { isObject } from "lodash"
 
 export const pattern = {
     integer: {
@@ -7,7 +8,7 @@ export const pattern = {
     },
 
     mandatory: {
-        mask:a=>(a != null && a != '' && a.trim()!=''),
+        mask:a=>(a != null && a != '' && isObject(a) && a.trim()!=''),
         pattern:'This is a mandatory field.'
     },
 
