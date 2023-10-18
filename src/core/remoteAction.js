@@ -42,7 +42,7 @@ export const api = store => next => action => {
           body = JSON.stringify(action)
           headers = { 'Content-Type': 'application/json' }
 
-          const _token = localStorage.getItem('cfd61b8a7397fa7c10b2ae548f5bfaef')
+          const _token = sessionStorage.getItem('cfd61b8a7397fa7c10b2ae548f5bfaef')
 
           if (_token) {
             if (process.env.JWT_BEARER?.toLowerCase() === 'true')
@@ -68,7 +68,7 @@ export const api = store => next => action => {
             const _token = res.headers.get('token')
 
             if (_token)
-              localStorage.setItem('cfd61b8a7397fa7c10b2ae548f5bfaef', _token)
+            sessionStorage.setItem('cfd61b8a7397fa7c10b2ae548f5bfaef', _token)
 
             return res.json()
           }
@@ -76,7 +76,7 @@ export const api = store => next => action => {
         }).then(data => {
 
           if (data.bear_token_) {
-            localStorage.setItem('cfd61b8a7397fa7c10b2ae548f5bfaef', data.bear_token_)
+            sessionStorage.setItem('cfd61b8a7397fa7c10b2ae548f5bfaef', data.bear_token_)
             delete data.bear_token_
           }
 

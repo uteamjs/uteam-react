@@ -8,7 +8,7 @@ export const pattern = {
     },
 
     mandatory: {
-        mask:a=>(a != null && a != '' && isString(a) && a.trim()!=''),
+        mask:a=>(a != null && a != '' && !(isString(a) && a.trim()!='')),
         pattern:'This is a mandatory field.'
     },
 
