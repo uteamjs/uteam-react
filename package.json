@@ -26,10 +26,8 @@
   "author": "U Team Inc.",
   "license": "MIT",
   "dependencies": {
-    "@ag-grid-community/all-modules": "^25.2.0",
-    "@ag-grid-community/core": "^25.2.0",
-    "@ag-grid-community/react": "^25.2.0",
     "@babel/runtime": "^7.15.4",
+    "ag-grid-community": "^31.0.1",
     "bootstrap": "4.6.0",
     "cross-env": "^7.0.3",
     "isomorphic-fetch": "^3.0.0",

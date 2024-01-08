@@ -1,9 +1,9 @@
 import React from 'react'
-import { AgGridReact } from '@ag-grid-community/react'
-import { AllCommunityModules } from "@ag-grid-community/all-modules"
+import { AgGridReact } from 'ag-grid-react'
+import { AllCommunityModules } from "ag-grid-react"
 
-import '@ag-grid-community/core/dist/styles/ag-grid.min.css'
-import '@ag-grid-community/core/dist/styles/ag-theme-alpine.min.css'
+import 'ag-grid-community/styles/ag-grid.min.css'
+import 'ag-grid-community/styles/ag-theme-alpine.min.css'
 
 const _add =  comp => (id, Obj, func) => ({ 
     click:  { 
