@@ -135,7 +135,8 @@ export const utControl = _this => props => {
     const _KeyDown = onKeyDown || _this.onKeyDown
     const _KeyPress = onKeyPress || _this.onKeyPress
     const _isRead = isUndefined(isRead) ? !(isEmpty(_p) ? _.isEdit : _p.isEdit) : (isRead === 'true' || isRead)
-    const _id = name + '-' + id + '-' + st
+    const _elem_id = name + '-' + id
+    const _id = _elem_id + '-' + st
 
     //if(id== 'search') {
     //    console.log(_isRead)
@@ -221,7 +222,9 @@ export const utControl = _this => props => {
 
                     style.height = _i * 20 + 6 + 'px'
 
-                    return <select multiple="multiple"
+                    return <select
+                        id={_elem_id}
+                        multiple="multiple"
                         className='form-control'
                         row={_n[1]}
                         value={_val || []}
@@ -235,7 +238,9 @@ export const utControl = _this => props => {
             }
 
             return (
-                <Form.Control as={type} value={value || ''}
+                <Form.Control
+                    id={_elem_id}
+                    as={type} value={value || ''}
                     disabled={_isRead}
                     aria-label={_f.label}
                     style={style}
@@ -247,10 +252,11 @@ export const utControl = _this => props => {
 
         case 'singledatepicker':
 
-            return  <SingleDate {...{
+            return <SingleDate {...{
+                _elem_id,
                 _f, _isRead, value,
-                onChange: _Change({ id, index, type }) 
-            }}/>
+                onChange: _Change({ id, index, type })
+            }} />
 
         case 'datepicker':
             return _isRead ? <div>{value}</div> : <InputDate id={id} index={index} />

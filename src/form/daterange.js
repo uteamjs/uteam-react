@@ -79,12 +79,14 @@ export const DatePicker = ({ _f, _isRead, value, onChange }) => {
 
 import { hk } from './holidays'
 
-export const SingleDate = ({ _f, _isRead, value, onChange }) => {
+export const SingleDate = ({ _elem_id, _f, _isRead, value, onChange }) => {
     // if (value == '' || value == null) value = new Date()
 
-    return <SingleDatePicker selected={value} onChange={v =>
-        onChange({ target: { value: v } })}
-        disabled = {_isRead}
+    return <SingleDatePicker
+        id={_elem_id}
+        selected={value} onChange={v =>
+            onChange({ target: { value: v } })}
+        disabled={_isRead}
         dateFormat={_f.format ?? 'dd/MM/yyyy'}
         holidays={_f.holidays ?? hk}
 
