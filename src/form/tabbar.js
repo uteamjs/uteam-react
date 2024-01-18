@@ -8,7 +8,7 @@ export const TabBar = ({ children, tabKey }) =>
     </Nav>
 
 
-export const TabItem = ({ href, eventKey, caption }) =>
+export const TabItem = ({ href, eventKey, caption, classname }) =>
     <Nav.Item>
-        <Nav.Link href={href} eventKey={eventKey}>{caption}</Nav.Link>
+        <Nav.Link href={href} eventKey={eventKey} className={classname}>{caption}</Nav.Link>
     </Nav.Item>
