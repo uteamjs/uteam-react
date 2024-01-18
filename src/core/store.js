@@ -52,9 +52,21 @@ export const storeDelete = ({ name }) => {
     store.replaceReducer(combineReducers(reducers))
 }
 
+var cnt = 0
+
 const _setStatus = (val = 'loading') => {
+    if (val === 'loading')
+        ++cnt
+    else
+        --cnt
+
     const e = document.getElementById('__pagestatus__')
-    if(e) e.innerText = val
+    if (e) {
+        if (cnt > 0)
+            e.innerText = 'loading ' + cnt
+        else 
+            e.innerText = val 
+    }
 }
 
 const _call_api = _r => tp => (func, payload, next) => {
@@ -79,8 +91,14 @@ const _call_api = _r => tp => (func, payload, next) => {
             , _r.name)
 
     } else {
-        _setStatus('loading')
-        storeCall(tp, func, payload, next, _r.name)
+        if (tp === 'api') {
+            _setStatus('loading')
+            storeCall(tp, func, payload, (data) => {
+                _setStatus('ready')
+                next(data)
+            }, _r.name)
+        } else
+            storeCall(tp, func, payload, next, _r.name)
     }
 }
 
@@ -162,7 +180,7 @@ export const utCreateElement = (mod, init) => {
                     if (process.env.API_STATUS === 'true')
                         state._.apiStatus = 'isReady'
 
-                    _setStatus('ready')
+                    //_setStatus('ready')
 
                     return Object.assign({}, state)
                 }
