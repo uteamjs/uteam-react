@@ -185,11 +185,14 @@ export const utControl = _this => props => {
                     labelKey={_f.key || 'text'}
                     multiple={!_f.single}
                     disabled={_isRead}
-                    defaultSelected={value}
+                    selected={value}
                     allowNew={_f.allowNew || false}
                     clearButton={_f.clearButton || false}
                     placeholder={_f.placeholder}
-                    onChange={_Change({ id, index, type })}
+                    onChange={(select) => { 
+                        _Change({ id, index, type })(select)
+                        _this.setState({})
+                    }}
                     options={_f.options}
                 />
                 : null
