@@ -193,7 +193,7 @@ export const utControl = _this => props => {
                         _Change({ id, index, type })(select)
                         _this.setState({})
                     }}
-                    options={_f.options}
+                    options={_f.options || []}
                 />
                 : null
 
