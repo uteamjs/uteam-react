@@ -157,8 +157,8 @@ export const utControl = _this => props => {
             </div>
 
         case 'radio':
-            if (_isRead)
-                return <div aria-label={_f.label}>{list[value]}</div>
+            //if (_isRead)
+            //    return <div aria-label={_f.label}>{list[value]}</div>
 
         case 'checkbox':
             return <div aria-label={_f.label}>
