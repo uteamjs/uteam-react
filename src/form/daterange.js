@@ -84,11 +84,14 @@ export const SingleDate = ({ _elem_id, _f, _isRead, value, onChange }) => {
 
     return <SingleDatePicker
         id={_elem_id}
-        selected={value} onChange={v =>
+        selected={value} 
+        onChange={v =>
             onChange({ target: { value: v } })}
         disabled={_isRead}
         dateFormat={_f.format ?? 'dd/MM/yyyy'}
         holidays={_f.holidays ?? hk}
+        showYearDropdown
+        todayButton="Today"
 
     />
 }
