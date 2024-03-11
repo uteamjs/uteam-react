@@ -81,7 +81,7 @@ export const DatePicker = ({ _f, _isRead, value, onChange }) => {
 import { hk } from './holidays'
 
 const yy = (new Date()).getFullYear()
-const years = range(yy - 40, yy + 5, 1)
+const years = range(  /*yy - 40*/1900, yy + 5, 1)
 const months = [
     "January",
     "February",
@@ -107,8 +107,8 @@ const custom_header = ({
     nextMonthButtonDisabled,
 }) => {
 
-    const y2 = date.getFullYear() + 5
-    const y1 = years[years.length - 1]
+    var y2 = date.getFullYear() + 5
+    var y1 = years[years.length - 1]
 
     if(y2 > y1)
         for(var y = y1 + 1; y < y2; y++)
