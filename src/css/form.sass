@@ -1,11 +1,28 @@
 @import './form.module'
 @import './section'
 @import './multi-edit'
+
+.form-clear-parent
+    position: relative
+
+.form-clear > svg:hover
+    opacity: .6
+
+.form-clear > svg
+    opacity: 0
+
+.form-clear
+    cursor: pointer
+    display: flex
+    position: absolute
+    right: 0
+    bottom: 10px
+    width: 20px
     
 .form-group.row
     align-items: flex-end
 
-.form-label 
+.form-label
     color: gray
     font-size: 14px
 
@@ -18,7 +35,7 @@ button#ut-pop-close
 
     > div
         float: right
- 
+
     button, a
         margin-left: 5px
 
@@ -37,7 +54,6 @@ button#ut-pop-close
 .date-range
     > span
         vertical-align: middle
-
 
 // Day Picker
 .DayPicker

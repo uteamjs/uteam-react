@@ -9,7 +9,8 @@ import 'react-toggle/style.css'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import { DateRange, DatePicker, SingleDate } from './daterange'
 import 'react-bootstrap-typeahead/css/Typeahead.css'
-
+import { NumericFormat } from 'react-number-format'
+import { AiOutlineClose } from "react-icons/ai"
 
 const loop = (parent, child, cb) => child ?
     Object.entries(child).reduce((r, [key, link]) =>
@@ -102,8 +103,23 @@ export const utControlActions = {
                 }
             })
         //console.log(state.fieldList)
+    },
+
+    clear: (state, { id, index }) => {
+        //console.log(p)
+        const _f = getField(state, id, index)
+        _f.value = ''
     }
 }
+
+//call('clear', { id, index })
+
+const Clear = ({ children, change, width }) => <div className='form-clear-parent' style={{ width }}>
+    {children}
+    <span className="form-clear" onClick={() => change({ target: { value: '' } })}>
+        <AiOutlineClose />
+    </span>
+</div>
 
 export const utControl = _this => props => {
     const { InputDate } = _this
@@ -146,6 +162,8 @@ export const utControl = _this => props => {
     //    console.log(_p)
 
 
+
+
     switch (type) {
         case 'toggle':
             //console.log(value)
@@ -157,8 +175,8 @@ export const utControl = _this => props => {
             </div>
 
         case 'radio':
-            //if (_isRead)
-            //    return <div aria-label={_f.label}>{list[value]}</div>
+        //if (_isRead)
+        //    return <div aria-label={_f.label}>{list[value]}</div>
 
         case 'checkbox':
             return <div aria-label={_f.label}>
@@ -189,7 +207,7 @@ export const utControl = _this => props => {
                     allowNew={_f.allowNew || false}
                     clearButton={_f.clearButton || false}
                     placeholder={_f.placeholder}
-                    onChange={(select) => { 
+                    onChange={(select) => {
                         _Change({ id, index, type })(select)
                         _this.setState({})
                     }}
@@ -276,9 +294,48 @@ export const utControl = _this => props => {
                 onChange: _Change({ id, index, type })
             }} />
 
+        case 'numeric':
+            const _prop = {
+                className: 'form-control',
+                value, thousandSeparator: ',',
+                onChange: _Change({ id, index, type }),
+
+                style: { textAlign: 'right', paddingRight: '20px' }
+
+            }
+
+            if (_isRead)
+                _prop.displayType = 'text'
+
+            if (_f.format) {
+                const _n = _f.format.split(',')
+                const _l = _n.length
+
+                if (_l >= 2) {
+                    if (_n[0] === 'Text')
+                        _prop.maxLength = _n[2]
+
+
+                    if (_l >= 3)
+                        _prop.style.width = (parseInt(_n[1]) * 8 + 30) + 'px'
+                }
+            }
+
+
+            if (hint) _prop.placeholder = hint
+
+
+            return <Clear change={_Change({ id, valid, index, type })} width={_prop.style.width || 'auto'}>
+                <NumericFormat {...{
+                    ..._prop, ..._f.props
+                }} />
+            </Clear>
+
         case 'password':
             if (_isRead)
                 return value ? value.replace(/[^*]/gm, '•') : ''
+
+        // Continues to next case
 
         case 'number':
         case 'text':
@@ -322,11 +379,13 @@ export const utControl = _this => props => {
 
             if (hint) _props.placeholder = hint
 
-            return <Form.Control {...{
-                ..._props,
-                key: 'f=' + id,
-                'aria-label': _f.label
-            }} />
+            return <Clear change={_Change({ id, valid, index, type })}>
+                <Form.Control {...{
+                    ..._props,
+                    key: 'f=' + id,
+                    'aria-label': _f.label
+                }} />
+            </Clear>
 
         default:
             if (_this.customfield[type]) {

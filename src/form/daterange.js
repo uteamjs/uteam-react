@@ -160,6 +160,7 @@ export const SingleDate = ({ _elem_id, _f, _isRead, value, onChange }) => {
     return <SingleDatePicker
         id={_elem_id}
         selected={value}
+        className= 'form-control'
         renderCustomHeader={custom_header}
         onChange={v =>
             onChange({ target: { value: v } })}

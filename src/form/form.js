@@ -12,7 +12,7 @@ import { utButtonGroup, utForm, utColumns } from './container'
 import { utView, goBack, getSelectedRowID } from './table'
 
 
-import 'react-day-picker/lib/style.css'
+import 'react-day-picker/src/style.css'
 import '../css/form.sass'
 
 export class utform extends Component {
