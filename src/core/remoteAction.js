@@ -75,6 +75,12 @@ export const api = store => next => action => {
 
         }).then(data => {
 
+          if(data.timeout) {
+            alert('Session timeout, please click Ok to login again.')
+            location.reload()
+          }
+
+
           if (data.bear_token_) {
             sessionStorage.setItem('cfd61b8a7397fa7c10b2ae548f5bfaef', data.bear_token_)
             delete data.bear_token_
