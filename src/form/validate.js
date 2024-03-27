@@ -48,7 +48,7 @@ export const check = ({val, o}) => {
 
     if(o.mask && val !== '' && typeof o.mask!='function') {
         //console.log(val.match(new RegExp(o.mask)))
-        if(val.match(new RegExp(o.mask)) === null)
+        if(val.toString().match(new RegExp(o.mask)) === null)
             return o.pattern
     } 
     
