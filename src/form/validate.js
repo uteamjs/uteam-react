@@ -7,6 +7,11 @@ export const pattern = {
         tight: true
     },
 
+    currency: {
+        mask: "^\\$?[1-9]\\d{0,3}?(?:,\\d{3})*(?:\\.\\d{1,3})?$",
+        pattern: 'Currency only $0,000.00'
+    },
+
     mandatory: {
         mask:a=>(a != null && a != '' && !(isString(a) && a.trim()=='')),
         pattern:'This is a mandatory field.'
@@ -39,7 +44,7 @@ export const pattern = {
 export const check = ({val, o}) => {
     let error = null
 
-    //console.log(val, o.mask)
+    //console.log(val, o)
 
     if(o.mask && typeof o.mask=='function'){
         if(!o.mask(val))
@@ -48,9 +53,14 @@ export const check = ({val, o}) => {
 
     if(o.mask && val !== '' && typeof o.mask!='function') {
         //console.log(val.match(new RegExp(o.mask)))
-        if(val.toString().match(new RegExp(o.mask)) === null)
+        if(val.match(new RegExp(o.mask)) === null) {
+            //console.log(22,'is.null', o.pattern)
             return o.pattern
+        }
     } 
+
+    // Remove any currency notation
+    val = val.replaceAll(/\$|\,/g,'')
     
     if(o.max && val > o.max)
         return `${val} is greater than ${o.max}`

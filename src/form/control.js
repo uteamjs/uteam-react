@@ -291,14 +291,14 @@ export const utControl = _this => props => {
         case 'date':
             return _isRead ? <div aria-label={_f.label}>{value}</div> : <DatePicker {...{
                 _f, _isRead, value,
-                onChange: _Change({ id, index, type })
+                onChange: _Change({ id, valid, index, type })
             }} />
 
         case 'numeric':
             const _prop = {
                 className: 'form-control',
                 value, thousandSeparator: ',',
-                onChange: _Change({ id, index, type }),
+                onChange: _Change({ id, index, valid, type }),
 
                 style: { textAlign: 'right', paddingRight: '20px' }
 

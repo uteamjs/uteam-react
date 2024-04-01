@@ -13,11 +13,13 @@ export const onChange = _this => ({ id, index, valid, type, key, _id }) => e => 
                 e.target.value
 
     if (_this.fieldOnChange({ id, index, key, type, value: val, e, call, api })) {
+        
+        //console.log(valid)
+
         if (valid) {
             const msg = check({ val, o: valid })
 
             if (msg) {
-                //console.log(msg)
                 return call('errorMessage', { id, index, msg, val })
             }
         }
