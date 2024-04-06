@@ -276,7 +276,7 @@ export const utControl = _this => props => {
             return <SingleDate {...{
                 _elem_id,
                 _f, _isRead, value,
-                onChange: _Change({ id, index, type })
+                onChange: _Change({ id, index, valid, type })
             }} />
 
         case 'datepicker':

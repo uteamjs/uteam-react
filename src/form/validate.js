@@ -1,6 +1,12 @@
-import { isString } from "lodash"
+import { isString, isDate } from "lodash"
 
 export const pattern = {
+    date: {
+        mask: '(0?[1-9]|[12][0-9]|3[01])\\/(0?[1-9]|1[1,2])\\/(19|20)\\d{2}',
+        pattern: 'Date format in d/m/yyyy'
+
+    },
+
     integer: {
         mask: '^(?:-?[1-9]\\d*$)|(?:^0)$',
         pattern: 'Integer only',
@@ -13,17 +19,17 @@ export const pattern = {
     },
 
     mandatory: {
-        mask:a=>(a != null && a != '' && !(isString(a) && a.trim()=='')),
-        pattern:'This is a mandatory field.'
+        mask: a => (a != null && a != '' && !(isString(a) && a.trim() == '')),
+        pattern: 'This is a mandatory field.'
     },
 
     email: {
-        mask:"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$",
-        pattern:'You have entered an invalid email address!'
+        mask: "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$",
+        pattern: 'You have entered an invalid email address!'
     },
 
-    hkid: { 
-        mask: '^([A-Z]{1,2})([0-9]{6})\\(([A0-9])\\)$', 
+    hkid: {
+        mask: '^([A-Z]{1,2})([0-9]{6})\\(([A0-9])\\)$',
         pattern: 'AXXXXXX(X)'
     },
 
@@ -39,39 +45,76 @@ export const pattern = {
             '|3[47][0-9]{13})$',                // American Express
         pattern: 'VISA xxxx xxxx xxxx xxxx | AMEX xxx xxxxxx xxxxx'
     }
-} 
+}
 
-export const check = ({val, o}) => {
+const dstr = d => d.toLocaleDateString('en-HK')
+const msg = (a, b, c) => `${a} is ${c} then ${b}`
+const yyyymd = /(19|20)\d{2}\/(0?[1-9]|1[1,2])\/(0?[1-9]|[12][0-9]|3[01])/
+
+export const check = ({ val, o }) => {
     let error = null
 
     //console.log(val, o)
 
-    if(o.mask && typeof o.mask=='function'){
-        if(!o.mask(val))
-            return o.pattern
-    }
+    if (isDate(val)) {
+        let mmx
 
-    if(o.mask && val !== '' && typeof o.mask!='function') {
-        //console.log(val.match(new RegExp(o.mask)))
-        if(val.match(new RegExp(o.mask)) === null) {
-            //console.log(22,'is.null', o.pattern)
-            return o.pattern
+        if (o.max) {
+            if (isString(o.max))
+                if (o.max.match(yyyymd))
+                    mmx = new Date(o.max)
+                else
+                    return `Invalid max value: ${o.max}`
+            else
+                mmx = o.max
+
+            if (val > mmx)
+                return msg(dstr(val), dstr(mmx), 'greater')
         }
-    } 
 
-    // Remove any currency notation
-    val = val.replaceAll(/\$|\,/g,'')
-    
-    if(o.max && val > o.max)
-        return `${val} is greater than ${o.max}`
-    
-    if(o.min && val < o.min)
-        return `${val} is smaller than ${o.min}`
+        if (o.min) {
+            if (isString(o.min))
+                if (o.min.match(yyyymd))
+                    mmx = new Date(o.min)
+                else
+                    return `Invalid min value: ${o.min}`
+            else
+                mmx = o.min
 
-    if(val.length > o.len)
-        return `Length is longer than ${o.len} characters`
+            if (val < mmx)
+                return msg(dstr(val), dstr(mmx), 'less')
+        }
 
-    return error
+    } else {
+
+        if (o.mask && typeof o.mask == 'function') {
+            if (!o.mask(val))
+                return o.pattern
+        }
+
+        if (o.mask && val !== '' && typeof o.mask != 'function') {
+            //console.log(val.match(new RegExp(o.mask)))
+            if (val.match(new RegExp(o.mask)) === null) {
+                //console.log(22,'is.null', o.pattern)
+                return o.pattern
+            }
+        }
+
+
+        // Remove any currency notation
+        val = val.replaceAll(/\$|\,/g, '')
+
+        if (o.max && val > o.max)
+            return `${val} is greater than ${o.max}`
+
+        if (o.min && val < o.min)
+            return `${val} is smaller than ${o.min}`
+
+        if (val.length > o.len)
+            return `Length is longer than ${o.len} characters`
+
+        return error
+    }
 }
 
 exports.check = check
