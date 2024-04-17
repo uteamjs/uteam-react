@@ -4,7 +4,7 @@ import { capitalize } from '..'
 import { getField } from './util'
 import Toggle from 'react-toggle'
 import { AiOutlineHourglass } from 'react-icons/ai'
-import { isUndefined, isEmpty, isObject, isArray, isString } from 'lodash'
+import { isUndefined, isEmpty, isObject, isArray, indexOf } from 'lodash'
 import 'react-toggle/style.css'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import { DateRange, DatePicker, SingleDate } from './daterange'
@@ -132,6 +132,7 @@ export const utControl = _this => props => {
     const _p = _this.getField(id, 'parent')
     const _f = _this.getField(id)
 
+
     let value = id ? _f[st] : null
     let _list
     const isIndex = !isUndefined(index)
@@ -197,53 +198,67 @@ export const utControl = _this => props => {
             return <div aria-label={_f.label}>{value}</div>
 
         case 'typeahead':
-            return value ?
-                <Typeahead
-                    id={_id + '-typeahead'}
-                    labelKey={_f.key || 'text'}
-                    multiple={!_f.single}
-                    disabled={_isRead}
-                    selected={value}
-                    allowNew={_f.allowNew || false}
-                    clearButton={_f.clearButton || false}
-                    placeholder={_f.placeholder}
-                    onChange={(select) => {
-                        _Change({ id, index, type })(select)
-                        _this.setState({})
-                    }}
-                    options={_f.options || []}
-                />
-                : null
+
+            console.log(100, st, id, _f)
+            console.log(101, value)
+            return /*value ?*/ <Typeahead
+                id={_id + '-typeahead'}
+                labelKey={_f.key || 'text'}
+                multiple={!_f.single}
+                disabled={_isRead}
+                selected={value || []}
+                allowNew={_f.allowNew || false}
+                clearButton={_f.clearButton || false}
+                placeholder={_f.placeholder}
+                onChange={(select) => {
+                    console.log(111, select)
+                    _Change({ id, index, type })(select)
+                    _this.setState({})
+                }}
+                options={_f.options || []}
+            />
+        /*: null*/
 
         case 'select':
 
             let style = {}
             let lst = list || _list
 
-            const optionList = () => isArray(lst) ?
+            const getValue = (val, key, choice, i) => indexOf(val, key) < 0 ? null : <div key={key + '-' + i}>{choice}</div>
+
+            const optionList = (val) => isArray(lst) ?
                 lst.map(([key, choice], i) =>
-                    <option key={key + '-' + i} value={key}>{choice}</option>
+                    val ? getValue(val, key, choice, i) : <option key={key + '-' + i} value={key}>{choice}</option>
                 )
                 :
                 lst ? Object.entries(lst).map(([key, choice], i) =>
-                    <option key={key + '-' + i} value={key}>{choice}</option>
+                    val ? getValue(val, key, choice, i) : <option key={key + '-' + i} value={key}>{choice}</option>
                 ) : null
+
 
             if (_f.format) {
                 const _n = _f.format.split(',')
                 const _l = _n.length
 
+
                 if (_l > 0)
                     style.width = (parseInt(_n[0]) * 10 + 20) + 'px'
 
+
                 const _i = parseInt(_n[1])
+
 
                 if (_i > 1) {
                     const _val = isArray(value) ? value : [value]
 
+
+                    console.log(_val)
+
+
                     style.height = _i * 20 + 6 + 'px'
 
-                    return <select
+
+                    return _isRead ? <div>{optionList(_val)}</div> : <select
                         id={_elem_id}
                         multiple="multiple"
                         className='form-control'
