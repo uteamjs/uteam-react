@@ -198,9 +198,6 @@ export const utControl = _this => props => {
             return <div aria-label={_f.label}>{value}</div>
 
         case 'typeahead':
-
-            console.log(100, st, id, _f)
-            console.log(101, value)
             return /*value ?*/ <Typeahead
                 id={_id + '-typeahead'}
                 labelKey={_f.key || 'text'}
@@ -211,7 +208,6 @@ export const utControl = _this => props => {
                 clearButton={_f.clearButton || false}
                 placeholder={_f.placeholder}
                 onChange={(select) => {
-                    console.log(111, select)
                     _Change({ id, index, type })(select)
                     _this.setState({})
                 }}
@@ -240,23 +236,14 @@ export const utControl = _this => props => {
                 const _n = _f.format.split(',')
                 const _l = _n.length
 
-
                 if (_l > 0)
                     style.width = (parseInt(_n[0]) * 10 + 20) + 'px'
 
-
                 const _i = parseInt(_n[1])
-
 
                 if (_i > 1) {
                     const _val = isArray(value) ? value : [value]
-
-
-                    console.log(_val)
-
-
                     style.height = _i * 20 + 6 + 'px'
-
 
                     return _isRead ? <div>{optionList(_val)}</div> : <select
                         id={_elem_id}
@@ -267,7 +254,8 @@ export const utControl = _this => props => {
                         disabled={_isRead}
                         aria-label={_f.label}
                         style={style}
-                        onChange={_Change({ id, index, type })}>
+                        onChange={e => {}}
+                        onClick={_Change({ id, index, type })}>
                         {optionList()}
                     </select>
                 }
