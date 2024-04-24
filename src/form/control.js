@@ -114,12 +114,14 @@ export const utControlActions = {
 
 //call('clear', { id, index })
 
-const Clear = ({ children, change, width }) => <div className='form-clear-parent' style={{ width }}>
-    {children}
-    <span className="form-clear" onClick={() => change({ target: { value: '' } })}>
-        <AiOutlineClose />
-    </span>
-</div>
+const Clear = ({ children, change, width, isRead }) =>
+    isRead ? <>{ children }</> :
+        <div className='form-clear-parent' style={{ width }}>
+            {children}
+            <span className="form-clear" onClick={() => change({ target: { value: '' } })}>
+                <AiOutlineClose />
+            </span>
+        </div>
 
 export const utControl = _this => props => {
     const { InputDate } = _this
@@ -254,7 +256,7 @@ export const utControl = _this => props => {
                         disabled={_isRead}
                         aria-label={_f.label}
                         style={style}
-                        onChange={e => {}}
+                        onChange={e => { }}
                         onClick={_Change({ id, index, type })}>
                         {optionList()}
                     </select>
@@ -307,8 +309,10 @@ export const utControl = _this => props => {
 
             }
 
-            if (_isRead)
+            if (_isRead) {
                 _prop.displayType = 'text'
+                _prop.className += ' field-ready-only'
+            }                
 
             if (_f.format) {
                 const _n = _f.format.split(',')
@@ -328,7 +332,7 @@ export const utControl = _this => props => {
             if (hint) _prop.placeholder = hint
 
 
-            return <Clear change={_Change({ id, valid, index, type })} width={_prop.style.width || 'auto'}>
+            return <Clear change={_Change({ id, valid, index, type})} isRead={isRead} width={_prop.style.width || 'auto'}>
                 <NumericFormat {...{
                     ..._prop, ..._f.props
                 }} />
@@ -382,7 +386,7 @@ export const utControl = _this => props => {
 
             if (hint) _props.placeholder = hint
 
-            return <Clear change={_Change({ id, valid, index, type })}>
+            return <Clear change={_Change({ id, valid, index, type })} isRead={_isRead}>
                 <Form.Control {...{
                     ..._props,
                     key: 'f=' + id,
