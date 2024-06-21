@@ -332,7 +332,7 @@ export const utControl = _this => props => {
             if (hint) _prop.placeholder = hint
 
 
-            return <Clear change={_Change({ id, valid, index, type})} isRead={isRead} width={_prop.style.width || 'auto'}>
+            return <Clear change={_Change({ id, valid, index, type})} isRead={isRead} width={_prop.style?.width || 'auto'}>
                 <NumericFormat {...{
                     ..._prop, ..._f.props
                 }} />
@@ -386,7 +386,7 @@ export const utControl = _this => props => {
 
             if (hint) _props.placeholder = hint
 
-            return <Clear change={_Change({ id, valid, index, type })} isRead={_isRead}>
+            return <Clear change={_Change({ id, valid, index, type })} isRead={_isRead} width={_props.style?.width || 'auto'}>
                 <Form.Control {...{
                     ..._props,
                     key: 'f=' + id,
