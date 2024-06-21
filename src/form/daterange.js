@@ -168,6 +168,7 @@ export const SingleDate = ({ _elem_id, _f, _isRead, value, onChange }) => {
         dateFormat={_f.format ?? 'dd/MM/yyyy'}
         holidays={_f.holidays ?? hk}
         todayButton="Today"
+        isClearable= {!_isRead}
     />
 }
 
