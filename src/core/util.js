@@ -169,10 +169,25 @@ export function getQuery(location) {
 }
 
 export function toastMessage(message) {
+    /*
     const type = {
         'info': { autoClose: 1500, hideProgressBar: true },
         'warn': {},
         'error': { autoClose: false }
+    }*/
+    const type = {
+        'info': {
+            autoClose: false,
+            hideProgressBar: true,
+            position: "top-right"
+        },
+        'warn': {
+            autoClose: 3000,
+            hideProgressBar: true
+        },
+        'error': {
+            autoClose: 5000
+        }
     }
 
     if (isString(message))
@@ -183,7 +198,7 @@ export function toastMessage(message) {
             if (isArray(message[tp]))
                 message[tp].forEach(t => toast[tp](t, opt))
 
-            else if(isString(message[tp]))
+            else if (isString(message[tp]))
                 toast[tp](message[tp], opt)
 
         })
