@@ -4,7 +4,7 @@ import { capitalize } from '..'
 import { getField } from './util'
 import Toggle from 'react-toggle'
 import { AiOutlineHourglass } from 'react-icons/ai'
-import { isUndefined, isEmpty, isObject, isArray, indexOf } from 'lodash'
+import { isUndefined, isEmpty, isObject, isArray, isString } from 'lodash'
 import 'react-toggle/style.css'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import { DateRange, DatePicker, SingleDate } from './daterange'
@@ -32,17 +32,19 @@ export const utControlActions = {
             if (m && parseInt(m[1]) > 1 && m[2] === 'True') { // Multiple select
                 if (!isArray(_f.value))
                     _f.value = [_f.value]
+                
+                if (val.length<=1) {
+                    val = (_f.value.length > 0 && typeof _f.value[0] === 'number') ? parseInt(val[0]) : val[0]
 
-                if (_f.value.length > 0 && typeof _f.value[0] === 'number')
-                    val = parseInt(val)
-
-                let i = _f.value.indexOf(val)
-
-                if (i < 0)
-                    _f.value.push(val)
-                else
-                    _f.value.splice(i, 1)
-
+                    let i = _f.value.indexOf(val)
+                    
+                    if (i < 0)
+                        _f.value.push(val)
+                    else
+                        _f.value.splice(i, 1)
+                } else {
+                    _f.value = val
+                }
                 isSingle = false
             }
         }
@@ -178,8 +180,8 @@ export const utControl = _this => props => {
             </div>
 
         case 'radio':
-        //if (_isRead)
-        //    return <div aria-label={_f.label}>{list[value]}</div>
+            //if (_isRead)
+            //    return <div aria-label={_f.label}>{list[value]}</div>
 
         case 'checkbox':
             return <div aria-label={_f.label}>
@@ -200,22 +202,23 @@ export const utControl = _this => props => {
             return <div aria-label={_f.label}>{value}</div>
 
         case 'typeahead':
-            return /*value ?*/ <Typeahead
-                id={_id + '-typeahead'}
-                labelKey={_f.key || 'text'}
-                multiple={!_f.single}
-                disabled={_isRead}
-                selected={value || []}
-                allowNew={_f.allowNew || false}
-                clearButton={_f.clearButton || false}
-                placeholder={_f.placeholder}
-                onChange={(select) => {
-                    _Change({ id, index, type })(select)
-                    _this.setState({})
-                }}
-                options={_f.options || []}
-            />
-        /*: null*/
+            return value ?
+                <Typeahead
+                    id={_id + '-typeahead'}
+                    labelKey={_f.key || 'text'}
+                    multiple={!_f.single}
+                    disabled={_isRead}
+                    selected={value}
+                    allowNew={_f.allowNew || false}
+                    clearButton={_f.clearButton || false}
+                    placeholder={_f.placeholder}
+                    onChange={(select) => { 
+                        _Change({ id, index, type })(select)
+                        _this.setState({})
+                    }}
+                    options={_f.options || []}
+                />
+                : null
 
         case 'select':
 

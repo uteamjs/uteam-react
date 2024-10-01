@@ -33,7 +33,16 @@ export const onChange = _this => ({ id, index, valid, type, key, _id }) => e => 
                 const obj = _f.list
                 val = Object.keys(obj).find(key => obj[key] === val)
             }*/
+            if (type === 'select' && _f.format) {                
+                const m = _f.format.match(/^\d*?,(\d*?),(.*)$/) // eg 25,5,False
 
+                if (m && parseInt(m[1]) > 1 && m[2] === 'True') { // Multiple select
+                    const elem = e.target
+                    val = [].slice.call(elem.selectedOptions).map(item => item.value)
+                    // console.log('field.js->onChange', type, id, _id, elem.selectedOptions, val)
+                }                
+            }
+                        
             call('change', { id, index, val: type === 'radio' ? key : val, _id, type })
         }
     }

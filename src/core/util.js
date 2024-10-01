@@ -179,15 +179,21 @@ export function toastMessage(message) {
         'info': {
             autoClose: false,
             hideProgressBar: true,
-            position: "top-right"
-        },
-        'warn': {
-            autoClose: 3000,
-            hideProgressBar: true
-        },
-        'error': {
-            autoClose: 5000
-        }
+            position: "top-right",
+            theme: "colored"
+          },
+          'warn': {
+            autoClose: false,
+            hideProgressBar: true,
+            position: "top-right",
+            theme: "colored"
+          },
+          'error': {
+            autoClose: false,
+            hideProgressBar: true,     
+            position: "top-right",
+            theme: "colored"
+          }
     }
 
     if (isString(message))
