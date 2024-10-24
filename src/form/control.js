@@ -4,7 +4,7 @@ import { capitalize } from '..'
 import { getField } from './util'
 import Toggle from 'react-toggle'
 import { AiOutlineHourglass } from 'react-icons/ai'
-import { isUndefined, isEmpty, isObject, isArray, isString } from 'lodash'
+import { isUndefined, isEmpty, isObject, isArray, isString, indexOf } from 'lodash'
 import 'react-toggle/style.css'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import { DateRange, DatePicker, SingleDate } from './daterange'
@@ -259,8 +259,8 @@ export const utControl = _this => props => {
                         disabled={_isRead}
                         aria-label={_f.label}
                         style={style}
-                        onChange={e => { }}
-                        onClick={_Change({ id, index, type })}>
+                        // onChange={e => { }}
+                        onChange={_Change({ id, index, type })}>
                         {optionList()}
                     </select>
                 }
