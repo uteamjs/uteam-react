@@ -32,12 +32,12 @@ export const utControlActions = {
             if (m && parseInt(m[1]) > 1 && m[2] === 'True') { // Multiple select
                 if (!isArray(_f.value))
                     _f.value = [_f.value]
-                
-                if (val.length<=1) {
+
+                if (val.length <= 1) {
                     val = (_f.value.length > 0 && typeof _f.value[0] === 'number') ? parseInt(val[0]) : val[0]
 
                     let i = _f.value.indexOf(val)
-                    
+
                     if (i < 0)
                         _f.value.push(val)
                     else
@@ -117,7 +117,7 @@ export const utControlActions = {
 //call('clear', { id, index })
 
 const Clear = ({ children, change, width, isRead }) =>
-    isRead ? <>{ children }</> :
+    isRead ? <>{children}</> :
         <div className='form-clear-parent' style={{ width }}>
             {children}
             <span className="form-clear" onClick={() => change({ target: { value: '' } })}>
@@ -180,8 +180,8 @@ export const utControl = _this => props => {
             </div>
 
         case 'radio':
-            //if (_isRead)
-            //    return <div aria-label={_f.label}>{list[value]}</div>
+        //if (_isRead)
+        //    return <div aria-label={_f.label}>{list[value]}</div>
 
         case 'checkbox':
             return <div aria-label={_f.label}>
@@ -210,9 +210,10 @@ export const utControl = _this => props => {
                     disabled={_isRead}
                     selected={value}
                     allowNew={_f.allowNew || false}
+                    newSelectionPrefix={_f.newSelectionPrefix || 'New selection:'}
                     clearButton={_f.clearButton || false}
                     placeholder={_f.placeholder}
-                    onChange={(select) => { 
+                    onChange={(select) => {
                         _Change({ id, index, type })(select)
                         _this.setState({})
                     }}
@@ -308,14 +309,15 @@ export const utControl = _this => props => {
                 value, thousandSeparator: ',',
                 onChange: _Change({ id, index, valid, type }),
 
-                style: { textAlign: 'right', paddingRight: '20px' }
+                style: { textAlign: 'right', paddingRight: '20px' },
+                id: _id
 
             }
 
             if (_isRead) {
                 _prop.displayType = 'text'
                 _prop.className += ' field-ready-only'
-            }                
+            }
 
             if (_f.format) {
                 const _n = _f.format.split(',')
@@ -335,7 +337,7 @@ export const utControl = _this => props => {
             if (hint) _prop.placeholder = hint
 
 
-            return <Clear change={_Change({ id, valid, index, type})} isRead={isRead} width={_prop.style?.width || 'auto'}>
+            return <Clear change={_Change({ id, valid, index, type })} isRead={isRead} width={_prop.style?.width || 'auto'}>
                 <NumericFormat {...{
                     ..._prop, ..._f.props
                 }} />
