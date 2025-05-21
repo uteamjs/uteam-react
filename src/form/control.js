@@ -131,7 +131,7 @@ export const utControl = _this => props => {
     const _ = _this.props._ || _this.props.init._
 
     const { name, call } = _this.props
-    let { st = 'value', id, index, children, elem, isRead,
+    let { st = 'value', id, index, children, elem, isRead, onBlur,
         onChange, onKeyDown, onKeyPress, append } = props
     const _p = _this.getField(id, 'parent')
     const _f = _this.getField(id)
@@ -152,6 +152,7 @@ export const utControl = _this => props => {
     }
 
     const { type, list, valid, hint } = id ? _f : {}
+    const _Blur = onBlur || _this.onBlur;    
     const _Change = onChange || _this.onChange
     const _KeyDown = onKeyDown || _this.onKeyDown
     const _KeyPress = onKeyPress || _this.onKeyPress
@@ -166,7 +167,25 @@ export const utControl = _this => props => {
     //if(id == 'billemail')
     //    console.log(_p)
 
+    function getAutoWidthFromOptions(optionList, font = '14px Arial', padding = 30) {
+        try {
+        if (!Array.isArray(optionList)) return 'auto';
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.font = font;
 
+        let maxWidth = 0;
+        for (const [, text] of optionList) {
+            if (typeof text === 'string') {
+            maxWidth = Math.max(maxWidth, ctx.measureText(text).width);
+            }
+        }
+        return Math.ceil(maxWidth + padding + 10) + 'px';
+        } catch (e) {
+        console.warn('getAutoWidthFromOptions error:', e);
+        return 'auto';
+        }
+    }
 
 
     switch (type) {
@@ -176,6 +195,7 @@ export const utControl = _this => props => {
                 <Toggle aria-label={_f.label}
                     defaultChecked={value === true}
                     disabled={_isRead}
+                    onBlur={_Blur({id, index, type })}
                     onChange={_Change({ id, index, type })} />
             </div>
 
@@ -193,6 +213,7 @@ export const utControl = _this => props => {
                         id={_id + '-' + key}
                         type={type}
                         label={isObject(choice) && choice.child ? createElement(choice.child) : choice}
+                        onBlur={_Blur({ id, key, index, type })}
                         onChange={_Change({ id, key, index, type })} >
                     </Form.Check>
                 ) : null}
@@ -213,6 +234,10 @@ export const utControl = _this => props => {
                     newSelectionPrefix={_f.newSelectionPrefix || 'New selection:'}
                     clearButton={_f.clearButton || false}
                     placeholder={_f.placeholder}
+                    onBlur={(select) => {
+                        _Blur({ id, index, type })(select)
+                        _this.setState({})
+                    }}
                     onChange={(select) => {
                         _Change({ id, index, type })(select)
                         _this.setState({})
@@ -242,10 +267,24 @@ export const utControl = _this => props => {
                 const _n = _f.format.split(',')
                 const _l = _n.length
 
-                if (_l > 0)
-                    style.width = (parseInt(_n[0]) * 10 + 20) + 'px'
+                const _i = parseInt(_n[1]); // add by DY
+                // if (_l > 0) style.width = parseInt(_n[0]) * 10 + 20 + 'px';
 
-                const _i = parseInt(_n[1])
+                if (_l > 0) {
+                    if (_i > 1 || typeof lst === 'undefined') {
+                        style.width = parseInt(_n[0]) * 10 + 20 + 'px';
+                    } else if (typeof lst !== 'undefined') {
+                        // Use auto-width based on text length
+                        const rawOptions = Array.isArray(lst) ? lst : Object.entries(lst);
+                        style.width = getAutoWidthFromOptions(rawOptions);
+                        // style.width = parseInt(_n[0]) * 10 + 20 + 'px';  // restore to fixed width 
+                    }
+                }
+
+                // if (_l > 0)
+                //     style.width = (parseInt(_n[0]) * 10 + 20) + 'px'
+
+                // const _i = parseInt(_n[1])
 
                 if (_i > 1) {
                     const _val = isArray(value) ? value : [value]
@@ -261,6 +300,7 @@ export const utControl = _this => props => {
                         aria-label={_f.label}
                         style={style}
                         // onChange={e => { }}
+                        onBlur={_Blur({ id, index, type })}
                         onChange={_Change({ id, index, type })}>
                         {optionList()}
                     </select>
@@ -274,6 +314,7 @@ export const utControl = _this => props => {
                     disabled={_isRead}
                     aria-label={_f.label}
                     style={style}
+                    onBlur={_Blur({ id, index, type })}
                     onChange={_Change({ id, index, type })}>
                     {optionList()}
                 </Form.Control>
@@ -285,6 +326,7 @@ export const utControl = _this => props => {
             return <SingleDate {...{
                 _elem_id,
                 _f, _isRead, value,
+                onBlur: _Blur({ id, index, valid, type }),
                 onChange: _Change({ id, index, valid, type })
             }} />
 
@@ -294,12 +336,14 @@ export const utControl = _this => props => {
         case 'daterange':
             return <DateRange {...{
                 _f, _isRead, value,
+                onBlur: _Blur({ id, index, type }),
                 onChange: _Change({ id, index, type })
             }} />
 
         case 'date':
             return _isRead ? <div aria-label={_f.label}>{value}</div> : <DatePicker {...{
                 _f, _isRead, value,
+                onBlur: _Blur({ id, index, valid, type }),
                 onChange: _Change({ id, valid, index, type })
             }} />
 
@@ -307,11 +351,20 @@ export const utControl = _this => props => {
             const _prop = {
                 className: 'form-control',
                 value, thousandSeparator: ',',
+                onBlur: _Blur({ id, index, valid, type }),
                 onChange: _Change({ id, index, valid, type }),
 
                 style: { textAlign: 'right', paddingRight: '20px' },
+                getInputRef: (el) => {
+                    // Force !important right alignment even if style is overridden
+                    if (el) el.style.setProperty('text-align', 'right', 'important');
+                },
                 id: _id
+            }
 
+            if (_f?.valid?.pattern === "This is a numeric field with at most 2 decimal places.") {
+                _prop.decimalScale = 2;
+                _prop.fixedDecimalScale = true;
             }
 
             if (_isRead) {
@@ -364,6 +417,7 @@ export const utControl = _this => props => {
                 ...props,
                 type, id: _id,
                 value: value || '',
+                onBlur: _Blur({ id, valid, index, type }),
                 onChange: _Change({ id, valid, index, type }),
                 onKeyDown: _KeyDown,
                 onKeyPress: e => _KeyPress({ char: e.key, value: e.target.value, id, type, e })
@@ -405,6 +459,7 @@ export const utControl = _this => props => {
                 return _this.customfield[type]({
                     props,
                     id, type, index, value, valid, isRead,
+                    onBlur: _Blur({ id, valid, index, type }),
                     onChange: _Change({ id, valid, index, type })
                 })
             }

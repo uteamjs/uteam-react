@@ -2,7 +2,7 @@ import { Component } from "react"
 import { pattern } from './validate'
 export { pattern }
 
-import { onChange, getInitField, utfield } from './field'
+import { onBlur, onChange, getInitField, utfield } from './field'
 import { utControl } from './control'
 import { utInputDate } from './date'
 import { utSection, utSectionSave } from './section'
@@ -34,6 +34,10 @@ export class utform extends Component {
     Columns = utColumns
 
     getField = getInitField(this)
+
+    fieldOnBlur = () => true
+
+    onBlur = onBlur(this)
 
     fieldOnChange = () => true
 
