@@ -213,7 +213,7 @@ export const utControl = _this => props => {
                         id={_id + '-' + key}
                         type={type}
                         label={isObject(choice) && choice.child ? createElement(choice.child) : choice}
-                        onBlur={_Blur({ id, key, index, type })}
+                        // onBlur={_Blur({ id, key, index, type })}
                         onChange={_Change({ id, key, index, type })} >
                     </Form.Check>
                 ) : null}
