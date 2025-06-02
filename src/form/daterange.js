@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import Popup from 'reactjs-popup'
 import 'reactjs-popup/dist/index.css'
 import Button from 'react-bootstrap/Button'
@@ -10,6 +10,7 @@ import moment from 'moment'
 import SingleDatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 import { range } from 'lodash'
+import { parse, isValid, format as formatdate2} from 'date-fns';
 
 const formatdate = datestring => moment(datestring).format('YYYY-MM-DD')
 
@@ -157,15 +158,71 @@ const custom_header = ({
 export const SingleDate = ({ _elem_id, _f, _isRead, value, onChange }) => {
     // if (value == '' || value == null) value = new Date()
 
+    const dateFormat = _f?.format ?? 'dd/MM/yyyy';
+    const [inputValue, setInputValue] = useState('');
+
+        // Handle raw input changes (user typing)
+    const handleRawChange = (e) => {
+        const newValue = e.target.value;
+        setInputValue(newValue);
+        const cursorPosition = e.target.selectionStart;
+
+        // Parse the input to check for year > 9999
+        if(newValue){
+        const parsedDate = parse(newValue, dateFormat, new Date());
+        if (isValid(parsedDate) && parsedDate.getFullYear() > 9999) {
+            // Prevent further input if year > 9999
+            e.preventDefault();
+            return;
+        }
+        
+        // Update inputValue to reflect exactly what was typed
+        setInputValue(newValue);
+        e.target.setSelectionRange(cursorPosition, cursorPosition);
+        }
+    };
+
+    // Handle date selection from the calendar
+    const handleDateChange = (date) => {
+        if (date instanceof Date && isValid(date) && date.getFullYear() <= 9999) {
+        setInputValue(formatdate2(date, dateFormat));
+        onChange({ target: { value: date } });
+        } else {
+        setInputValue('');
+        onChange({ target: { value: null } });
+        }
+    };
+
+    const handleBlur = (e) => {
+        const parsed = parse(inputValue, dateFormat, new Date());
+        if(e.target.value === '') {
+            setInputValue('');
+            onChange({target: {value: null}});
+        } else if (!isValid(parsed) || parsed.getFullYear() > 9999) {
+        const today = new Date();
+        setInputValue(formatdate2(today, dateFormat));
+        onChange({ target: { value: today } });
+        }else {
+            setInputValue((0, formatdate2)(parsed, dateFormat));
+            onChange({target: {value: parsed}});
+        }
+    };
+    
+
     return <SingleDatePicker
         id={_elem_id}
-        selected={value}
-        className= 'form-control'
+        value={inputValue}
+        selected={isValid(parse(inputValue, dateFormat, new Date())) ? parse(inputValue, dateFormat, new Date()) : null}
+        className='form-control'
         renderCustomHeader={custom_header}
-        onChange={v =>
-            onChange({ target: { value: v } })}
+        onChange={handleDateChange}
+        onChangeRaw = {(e) => {
+            e.preventDefault(); // Prevent react-datepicker's default parsing
+            handleRawChange(e); // Use our custom handler
+        }}
+        onBlur={handleBlur}
         disabled={_isRead}
-        dateFormat={_f.format ?? 'dd/MM/yyyy'}
+        dateFormat={dateFormat}
         holidays={_f.holidays ?? hk}
         todayButton="Today"
         isClearable= {!_isRead}

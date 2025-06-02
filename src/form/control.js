@@ -36,12 +36,13 @@ export const utControlActions = {
                 if (val.length <= 1) {
                     val = (_f.value.length > 0 && typeof _f.value[0] === 'number') ? parseInt(val[0]) : val[0]
 
-                    let i = _f.value.indexOf(val)
+                    // let i = _f.value.indexOf(val)
 
-                    if (i < 0)
-                        _f.value.push(val)
-                    else
-                        _f.value.splice(i, 1)
+                    // if (i < 0)
+                    //     _f.value.push(val)
+                    // else
+                    //     _f.value.splice(i, 1)
+                    _f.value = val     // do not implement multiple select
                 } else {
                     _f.value = val
                 }
@@ -180,10 +181,12 @@ export const utControl = _this => props => {
             maxWidth = Math.max(maxWidth, ctx.measureText(text).width);
             }
         }
-        return Math.ceil(maxWidth + padding + 10) + 'px';
+        // return Math.ceil(maxWidth + padding + 10) + 'px';
+        return Math.ceil(maxWidth + padding + 10);
         } catch (e) {
         console.warn('getAutoWidthFromOptions error:', e);
-        return 'auto';
+        // return 'auto';
+        return 0
         }
     }
 
@@ -276,8 +279,9 @@ export const utControl = _this => props => {
                     } else if (typeof lst !== 'undefined') {
                         // Use auto-width based on text length
                         const rawOptions = Array.isArray(lst) ? lst : Object.entries(lst);
-                        style.width = getAutoWidthFromOptions(rawOptions);
                         // style.width = parseInt(_n[0]) * 10 + 20 + 'px';  // restore to fixed width 
+                        // style.width = getAutoWidthFromOptions(rawOptions);
+                        style.width = Math.max(getAutoWidthFromOptions(rawOptions), parseInt(_n[0]) * 10 + 20 ) + 'px'  // Ensure at least the min width
                     }
                 }
 
@@ -301,7 +305,14 @@ export const utControl = _this => props => {
                         style={style}
                         // onChange={e => { }}
                         onBlur={_Blur({ id, index, type })}
-                        onChange={_Change({ id, index, type })}>
+                        // onChange={_Change({ id, index, type })}
+                        onChange={e => {
+                            const selected = Array.from(e.target.selectedOptions, o => {return {value:o.value}})
+                            console.log({selected, e})
+                            _Change({ id, index, type })({target: {selectedOptions: selected}});
+                            // or, if you set value directly: setVal(selected)
+                            }}
+                        >
                         {optionList()}
                     </select>
                 }
@@ -362,8 +373,14 @@ export const utControl = _this => props => {
                 id: _id
             }
 
-            if (_f?.valid?.pattern === "This is a numeric field with at most 2 decimal places.") {
-                _prop.decimalScale = 2;
+            // if (_f?.valid?.pattern === "This is a numeric field with at most 2 decimal places.") {
+            //     _prop.decimalScale = 2;
+            //     _prop.fixedDecimalScale = true;
+            // }
+
+            const matchDec = _f?.valid?.pattern?.match(/numeric field with at most (\d+) decimal/)
+            if (matchDec && matchDec[1]) {
+                _prop.decimalScale = parseInt(matchDec[1])
                 _prop.fixedDecimalScale = true;
             }
 
@@ -379,10 +396,12 @@ export const utControl = _this => props => {
                 if (_l >= 2) {
                     if (_n[0] === 'Text')
                         _prop.maxLength = _n[2]
-
-
-                    if (_l >= 3)
-                        _prop.style.width = (parseInt(_n[1]) * 8 + 30) + 'px'
+                    if (_l >= 3) {
+                        // add 000 separator for numWidth space
+                        var numWidth = parseInt(_n[1])
+                        numWidth = numWidth + Math.trunc((numWidth - matchDec?.[1] - 0.1) / 3)     // parseInt(_n[2]) not always show decimal places in program codes
+                        _prop.style.width = (numWidth * 8 + 30) + 'px'
+                    }
                 }
             }
 
