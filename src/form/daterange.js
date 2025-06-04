@@ -208,7 +208,8 @@ export const SingleDate = ({ _elem_id, _f, _isRead, value, onChange }) => {
         }
     };
     
-
+    inputValue === '' && value && setInputValue((0, formatdate2)(value, dateFormat));   
+    
     return <SingleDatePicker
         id={_elem_id}
         value={inputValue}
