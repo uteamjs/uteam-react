@@ -308,8 +308,11 @@ export const utControl = _this => props => {
                         // onChange={_Change({ id, index, type })}
                         onChange={e => {
                             const selected = Array.from(e.target.selectedOptions, o => {return {value:o.value}})
-                            console.log({selected, e})
-                            _Change({ id, index, type })({target: {selectedOptions: selected}});
+                            // console.log({selected, e})
+                            _Change({ id, index, type })({target: {
+                                selectedOptions: selected,
+                                value: e.target.value
+                            }});
                             // or, if you set value directly: setVal(selected)
                             }}
                         >
