@@ -132,7 +132,7 @@ export const utControl = _this => props => {
     const _ = _this.props._ || _this.props.init._
 
     const { name, call } = _this.props
-    let { st = 'value', id, index, children, elem, isRead, onBlur,
+    let { st = 'value', id, index, children, elem, isRead, allowNegative, noAutoWidth, onBlur,
         onChange, onKeyDown, onKeyPress, append } = props
     const _p = _this.getField(id, 'parent')
     const _f = _this.getField(id)
@@ -143,6 +143,8 @@ export const utControl = _this => props => {
     const isIndex = !isUndefined(index)
 
     isRead = isRead || _f.isRead
+    allowNegative = allowNegative || _f.allowNegative
+    noAutoWidth = noAutoWidth || _f.noAutoWidth     // only for select use
 
     if (isIndex) {
         if (_p.type === 'multi-group') {
@@ -153,11 +155,13 @@ export const utControl = _this => props => {
     }
 
     const { type, list, valid, hint } = id ? _f : {}
-    const _Blur = onBlur || _this.onBlur;    
+    const _Blur = onBlur || _this.onBlur;
     const _Change = onChange || _this.onChange
     const _KeyDown = onKeyDown || _this.onKeyDown
     const _KeyPress = onKeyPress || _this.onKeyPress
     const _isRead = isUndefined(isRead) ? !(isEmpty(_p) ? _.isEdit : _p.isEdit) : (isRead === 'true' || isRead)
+    const _allowNegative = isUndefined(allowNegative) ? _f.allowNegative : allowNegative
+    const _noAutoWidth = isUndefined(noAutoWidth) ? _f.noAutoWidth : noAutoWidth
     const _elem_id = name + '-' + id + '-' + st
     const _id = _elem_id
 
@@ -170,23 +174,23 @@ export const utControl = _this => props => {
 
     function getAutoWidthFromOptions(optionList, font = '14px Arial', padding = 30) {
         try {
-        if (!Array.isArray(optionList)) return 'auto';
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        ctx.font = font;
+            if (!Array.isArray(optionList)) return 'auto';
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.font = font;
 
-        let maxWidth = 0;
-        for (const [, text] of optionList) {
-            if (typeof text === 'string') {
-            maxWidth = Math.max(maxWidth, ctx.measureText(text).width);
+            let maxWidth = 0;
+            for (const [, text] of optionList) {
+                if (typeof text === 'string') {
+                    maxWidth = Math.max(maxWidth, ctx.measureText(text).width);
+                }
             }
-        }
-        // return Math.ceil(maxWidth + padding + 10) + 'px';
-        return Math.ceil(maxWidth + padding + 10);
+            // return Math.ceil(maxWidth + padding + 10) + 'px';
+            return Math.ceil(maxWidth + padding + 10 + 20); // add 10 for very long option string
         } catch (e) {
-        console.warn('getAutoWidthFromOptions error:', e);
-        // return 'auto';
-        return 0
+            console.warn('getAutoWidthFromOptions error:', e);
+            // return 'auto';
+            return 0
         }
     }
 
@@ -198,7 +202,7 @@ export const utControl = _this => props => {
                 <Toggle aria-label={_f.label}
                     defaultChecked={value === true}
                     disabled={_isRead}
-                    onBlur={_Blur({id, index, type })}
+                    onBlur={_Blur({ id, index, type })}
                     onChange={_Change({ id, index, type })} />
             </div>
 
@@ -265,6 +269,10 @@ export const utControl = _this => props => {
                     val ? getValue(val, key, choice, i) : <option key={key + '-' + i} value={key}>{choice}</option>
                 ) : null
 
+            // // if props defined noAutoWidth, add it here
+            // if (typeof _noAutoWidth !== 'undefined') {
+            //     _prop.noAutoWidth = _noAutoWidth
+            // }
 
             if (_f.format) {
                 const _n = _f.format.split(',')
@@ -281,7 +289,11 @@ export const utControl = _this => props => {
                         const rawOptions = Array.isArray(lst) ? lst : Object.entries(lst);
                         // style.width = parseInt(_n[0]) * 10 + 20 + 'px';  // restore to fixed width 
                         // style.width = getAutoWidthFromOptions(rawOptions);
-                        style.width = Math.max(getAutoWidthFromOptions(rawOptions), parseInt(_n[0]) * 10 + 20 ) + 'px'  // Ensure at least the min width
+                        if (_noAutoWidth) {
+                            style.width = parseInt(_n[0]) * 10 + 20 + 'px';  // restore to fixed width 
+                        } else {
+                            style.width = Math.max(getAutoWidthFromOptions(rawOptions), parseInt(_n[0]) * 10 + 20) + 'px'  // Ensure at least the min width
+                        }
                     }
                 }
 
@@ -307,15 +319,17 @@ export const utControl = _this => props => {
                         onBlur={_Blur({ id, index, type })}
                         // onChange={_Change({ id, index, type })}
                         onChange={e => {
-                            const selected = Array.from(e.target.selectedOptions, o => {return {value:o.value}})
+                            const selected = Array.from(e.target.selectedOptions, o => { return { value: o.value } })
                             // console.log({selected, e})
-                            _Change({ id, index, type })({target: {
-                                selectedOptions: selected,
-                                value: e.target.value
-                            }});
+                            _Change({ id, index, type })({
+                                target: {
+                                    selectedOptions: selected,
+                                    value: e.target.value
+                                }
+                            });
                             // or, if you set value directly: setVal(selected)
-                            }}
-                        >
+                        }}
+                    >
                         {optionList()}
                     </select>
                 }
@@ -376,6 +390,18 @@ export const utControl = _this => props => {
                 id: _id
             }
 
+            // if props defined allowNegative, add it here
+            if (typeof _allowNegative !== 'undefined') {
+                _prop.allowNegative = _allowNegative
+            }
+
+            // valid.min overrid props allowNegative to resolve logical deadlock
+            if (_f?.valid?.min >= 0) {
+                _prop.allowNegative = false
+            } else if (_f?.valid?.min < 0 || _f?.valid?.max < 0) {
+                _prop.allowNegative = true
+            }
+
             // if (_f?.valid?.pattern === "This is a numeric field with at most 2 decimal places.") {
             //     _prop.decimalScale = 2;
             //     _prop.fixedDecimalScale = true;
@@ -398,11 +424,12 @@ export const utControl = _this => props => {
 
                 if (_l >= 2) {
                     if (_n[0] === 'Text')
+                    // if (_n[0] === 'Text' || _n[0] === 'Number')  // no effect for type=number in HTML
                         _prop.maxLength = _n[2]
                     if (_l >= 3) {
                         // add 000 separator for numWidth space
                         var numWidth = parseInt(_n[1])
-                        numWidth = numWidth + Math.trunc((numWidth - matchDec?.[1] - 0.1) / 3)     // parseInt(_n[2]) not always show decimal places in program codes
+                        numWidth = numWidth + Math.trunc((numWidth - (matchDec?.[1] || 0) - 0.1) / 3)     // parseInt(_n[2]) not always show decimal places in program codes
                         _prop.style.width = (numWidth * 8 + 30) + 'px'
                     }
                 }
@@ -411,8 +438,12 @@ export const utControl = _this => props => {
 
             if (hint) _prop.placeholder = hint
 
-
-            return <Clear change={_Change({ id, valid, index, type })} isRead={isRead} width={_prop.style?.width || 'auto'}>
+            // console.log({ _prop, _f, _fprops: _f.props })
+            return <Clear
+                change={_Change({ id, valid, index, type })}
+                isRead={isRead}
+                width={_prop.style?.width || 'auto'}
+            >
                 <NumericFormat {...{
                     ..._prop, ..._f.props
                 }} />

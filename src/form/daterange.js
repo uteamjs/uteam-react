@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import Popup from 'reactjs-popup'
 import 'reactjs-popup/dist/index.css'
 import Button from 'react-bootstrap/Button'
@@ -155,65 +155,91 @@ const custom_header = ({
     </div>
 }
 
-export const SingleDate = ({ _elem_id, _f, _isRead, value, onChange }) => {
-    // if (value == '' || value == null) value = new Date()
+export const SingleDate = ({ _elem_id, _f, _isRead, value, onChange, onClear }) => {
 
     const dateFormat = _f?.format ?? 'dd/MM/yyyy';
-    const [inputValue, setInputValue] = useState('');
+    // const [inputValue, setInputValue] = useState('');    // initialise local text once
+    const [inputValue, setInputValue] = useState(() =>
+        value && isValid(value) ? formatdate2(value, dateFormat) : ''
+    );
 
-        // Handle raw input changes (user typing)
+    /* ------------------------------------------------------------------ *
+    * ❷ Keep the local text in sync with the parent `value` *after* render
+    *    (never from inside the render function itself).
+    * ------------------------------------------------------------------ */
+    useEffect(() => {
+        if (!value) {
+        setInputValue('');        // cleared
+        } else if (isValid(value)) {
+        setInputValue(formatdate2(value, dateFormat));
+        }
+    }, [value, dateFormat]);
+
+    /* ---------------- raw typing in the input ---------------- */
     const handleRawChange = (e) => {
-        const newValue = e.target.value;
-        setInputValue(newValue);
-        const cursorPosition = e.target.selectionStart;
-
-        // Parse the input to check for year > 9999
-        if(newValue){
-        const parsedDate = parse(newValue, dateFormat, new Date());
-        if (isValid(parsedDate) && parsedDate.getFullYear() > 9999) {
-            // Prevent further input if year > 9999
-            e.preventDefault();
+        const newVal = e?.target?.value;
+        if (typeof newVal !== 'string') {
             return;
-        }
+        }       
         
-        // Update inputValue to reflect exactly what was typed
-        setInputValue(newValue);
-        e.target.setSelectionRange(cursorPosition, cursorPosition);
-        }
+        const cursor = e.target.selectionStart;
+
+        // Stop once the user typed a 5-digit year
+        const yrMatch = newVal.match(/(\d{4,})$/);
+        if (yrMatch && Number(yrMatch[1]) > 9999) return;
+
+        setInputValue(newVal);
+        // keep caret position
+        requestAnimationFrame(() =>
+        e.target.setSelectionRange(cursor, cursor)
+        );
     };
 
-    // Handle date selection from the calendar
-    const handleDateChange = (date) => {
+    /* ---------------- click / select / “X” from the calendar ------------ */
+    const handleDateChange = (date, ev) => {
+        /* *** ❸ React-datepicker passes `null` when “X” is clicked *** */
+        if (!date) {
+        setInputValue('');
+        onChange({ target: { value: null } });
+        onClear?.(ev);            // tell the parent the clear button was hit
+        return;
+        }
+
+        // normal pick
         if (date instanceof Date && isValid(date) && date.getFullYear() <= 9999) {
         setInputValue(formatdate2(date, dateFormat));
         onChange({ target: { value: date } });
-        } else {
-        setInputValue('');
-        onChange({ target: { value: null } });
         }
     };
 
-    const handleBlur = (e) => {
+   /* ---------------- leave-field validation ---------------- */
+    const handleBlur = () => {
+        if (!inputValue) {
+        onChange({ target: { value: null } });
+        return;
+        }
         const parsed = parse(inputValue, dateFormat, new Date());
-        if(e.target.value === '') {
-            setInputValue('');
-            onChange({target: {value: null}});
-        } else if (!isValid(parsed) || parsed.getFullYear() > 9999) {
+        if (!isValid(parsed) || parsed.getFullYear() > 9999) {
         const today = new Date();
         setInputValue(formatdate2(today, dateFormat));
         onChange({ target: { value: today } });
-        }else {
-            setInputValue((0, formatdate2)(parsed, dateFormat));
-            onChange({target: {value: parsed}});
+        } else {
+        setInputValue(formatdate2(parsed, dateFormat));
+        onChange({ target: { value: parsed } });
         }
-    };
-    
-    inputValue === '' && value && setInputValue((0, formatdate2)(value, dateFormat));   
+    };   
+
+
+    // inputValue === '' && value && setInputValue((0, formatdate2)(value, dateFormat));   
     
     return <SingleDatePicker
         id={_elem_id}
         value={inputValue}
-        selected={isValid(parse(inputValue, dateFormat, new Date())) ? parse(inputValue, dateFormat, new Date()) : null}
+        selected={
+            isValid(parse(inputValue, dateFormat, new Date())) 
+                ? parse(inputValue, dateFormat, new Date()) 
+                : null
+        }
         className='form-control'
         renderCustomHeader={custom_header}
         onChange={handleDateChange}
