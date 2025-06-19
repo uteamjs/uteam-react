@@ -132,7 +132,8 @@ export const utControl = _this => props => {
     const _ = _this.props._ || _this.props.init._
 
     const { name, call } = _this.props
-    let { st = 'value', id, index, children, elem, isRead, allowNegative, noAutoWidth, onBlur,
+    let { st = 'value', id, index, children, elem, isRead,
+        sortListBy, allowNegative, noAutoWidth, onBlur,
         onChange, onKeyDown, onKeyPress, append } = props
     const _p = _this.getField(id, 'parent')
     const _f = _this.getField(id)
@@ -143,6 +144,7 @@ export const utControl = _this => props => {
     const isIndex = !isUndefined(index)
 
     isRead = isRead || _f.isRead
+    sortListBy = sortListBy || _f.sortListBy
     allowNegative = allowNegative || _f.allowNegative
     noAutoWidth = noAutoWidth || _f.noAutoWidth     // only for select use
 
@@ -160,6 +162,7 @@ export const utControl = _this => props => {
     const _KeyDown = onKeyDown || _this.onKeyDown
     const _KeyPress = onKeyPress || _this.onKeyPress
     const _isRead = isUndefined(isRead) ? !(isEmpty(_p) ? _.isEdit : _p.isEdit) : (isRead === 'true' || isRead)
+    const _sortListBy = isUndefined(sortListBy) ? _f.sortListBy : sortListBy
     const _allowNegative = isUndefined(allowNegative) ? _f.allowNegative : allowNegative
     const _noAutoWidth = isUndefined(noAutoWidth) ? _f.noAutoWidth : noAutoWidth
     const _elem_id = name + '-' + id + '-' + st
@@ -211,20 +214,64 @@ export const utControl = _this => props => {
         //    return <div aria-label={_f.label}>{list[value]}</div>
 
         case 'checkbox':
+            // return <div aria-label={_f.label}>
+            //     {list ? Object.entries(list).map(([key, choice], i) =>
+            //         <Form.Check inline disabled={_isRead}
+            //             checked={value && value.split('|').indexOf(key) >= 0}
+            //             style={{ padding: '8px 20px 0 0' }}
+            //             key={key + i}
+            //             id={_id + '-' + key}
+            //             type={type}
+            //             label={isObject(choice) && choice.child ? createElement(choice.child) : choice}
+            //             // onBlur={_Blur({ id, key, index, type })}
+            //             onChange={_Change({ id, key, index, type })} >
+            //         </Form.Check>
+            //     ) : null}
+            // </div>
+
+            // rules = key|value|key_skipHyphens|value_skipHyphens
+            const rules = _sortListBy?.split("_") || []
+            let newList = list ? Object.entries(list) : null
+
+            if (_sortListBy && rules?.length) {
+                console.log({ newList, _sortListBy, rules })
+
+                if (rules.length >= 2) {
+                    if (rules[1] === 'skipHyphens') {
+                        newList = newList
+                            .filter(t => !/^[-]+$/.test(t?.[1]))
+                    } else {
+                        console.log("Warn: Checkbox sortListby " & rules[1] & "not valid")
+                    }
+                }
+
+                if (rules[0] === 'key') {
+                    newList = newList.sort((a, b) =>
+                        a?.[0].localeCompare(b?.[0]))
+                } else if (rules[0] === 'value') {
+                    newList = newList.sort((a, b) =>
+                        a?.[1].localeCompare(b?.[1]))
+                } else {
+                    console.log("Warn: Checkbox sortListBy " & rules[0] & " not valid")
+                }
+            }
+
             return <div aria-label={_f.label}>
-                {list ? Object.entries(list).map(([key, choice], i) =>
-                    <Form.Check inline disabled={_isRead}
-                        checked={value && value.split('|').indexOf(key) >= 0}
-                        style={{ padding: '8px 20px 0 0' }}
-                        key={key + i}
-                        id={_id + '-' + key}
-                        type={type}
-                        label={isObject(choice) && choice.child ? createElement(choice.child) : choice}
-                        // onBlur={_Blur({ id, key, index, type })}
-                        onChange={_Change({ id, key, index, type })} >
-                    </Form.Check>
-                ) : null}
+                {newList
+                    .map(([key, choice], i) =>
+                        <Form.Check inline disabled={_isRead}
+                            checked={value && value.split('|').indexOf(key) >= 0}
+                            style={{ padding: '8px 20px 0 0' }}
+                            key={key + i}
+                            id={_id + '-' + key}
+                            type={type}
+                            label={isObject(choice) && choice.child ? createElement(choice.child) : choice}
+                            // onBlur={_Blur({ id, key, index, type })}
+                            onChange={_Change({ id, key, index, type })} >
+                        </Form.Check>
+                    )}
             </div>
+
 
         case 'label':
             return <div aria-label={_f.label}>{value}</div>
@@ -424,7 +471,7 @@ export const utControl = _this => props => {
 
                 if (_l >= 2) {
                     if (_n[0] === 'Text')
-                    // if (_n[0] === 'Text' || _n[0] === 'Number')  // no effect for type=number in HTML
+                        // if (_n[0] === 'Text' || _n[0] === 'Number')  // no effect for type=number in HTML
                         _prop.maxLength = _n[2]
                     if (_l >= 3) {
                         // add 000 separator for numWidth space
