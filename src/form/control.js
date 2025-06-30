@@ -133,7 +133,7 @@ export const utControl = _this => props => {
 
     const { name, call } = _this.props
     let { st = 'value', id, index, children, elem, isRead,
-        sortListBy, allowNegative, noAutoWidth, onBlur,
+        sortListBy, override2Decimal, allowNegative, noAutoWidth, onBlur,
         onChange, onKeyDown, onKeyPress, append } = props
     const _p = _this.getField(id, 'parent')
     const _f = _this.getField(id)
@@ -145,6 +145,7 @@ export const utControl = _this => props => {
 
     isRead = isRead || _f.isRead
     sortListBy = sortListBy || _f.sortListBy
+    override2Decimal = override2Decimal || _f.override2Decimal
     allowNegative = allowNegative || _f.allowNegative
     noAutoWidth = noAutoWidth || _f.noAutoWidth     // only for select use
 
@@ -163,6 +164,7 @@ export const utControl = _this => props => {
     const _KeyPress = onKeyPress || _this.onKeyPress
     const _isRead = isUndefined(isRead) ? !(isEmpty(_p) ? _.isEdit : _p.isEdit) : (isRead === 'true' || isRead)
     const _sortListBy = isUndefined(sortListBy) ? _f.sortListBy : sortListBy
+    const _override2Decimal = isUndefined(override2Decimal) ? _f.override2Decimal : override2Decimal
     const _allowNegative = isUndefined(allowNegative) ? _f.allowNegative : allowNegative
     const _noAutoWidth = isUndefined(noAutoWidth) ? _f.noAutoWidth : noAutoWidth
     const _elem_id = name + '-' + id + '-' + st
@@ -234,22 +236,22 @@ export const utControl = _this => props => {
             let newList = list ? Object.entries(list) : null
 
             if (_sortListBy && rules?.length) {
-                console.log({ newList, _sortListBy, rules })
+                // console.log({ newList, _sortListBy, rules })
 
                 if (rules.length >= 2) {
                     if (rules[1] === 'skipHyphens') {
                         newList = newList
-                            .filter(t => !/^[-]+$/.test(t?.[1]))
+                            ?.filter(t => !/^[-]+$/.test(t?.[1]))
                     } else {
                         console.log("Warn: Checkbox sortListby " & rules[1] & "not valid")
                     }
                 }
 
                 if (rules[0] === 'key') {
-                    newList = newList.sort((a, b) =>
+                    newList = newList?.sort((a, b) =>
                         a?.[0].localeCompare(b?.[0]))
                 } else if (rules[0] === 'value') {
-                    newList = newList.sort((a, b) =>
+                    newList = newList?.sort((a, b) =>
                         a?.[1].localeCompare(b?.[1]))
                 } else {
                     console.log("Warn: Checkbox sortListBy " & rules[0] & " not valid")
@@ -258,9 +260,9 @@ export const utControl = _this => props => {
 
             return <div aria-label={_f.label}>
                 {newList
-                    .map(([key, choice], i) =>
+                    ?.map(([key, choice], i) =>
                         <Form.Check inline disabled={_isRead}
-                            checked={value && value.split('|').indexOf(key) >= 0}
+                            checked={value && value?.split('|').indexOf(key) >= 0}
                             style={{ padding: '8px 20px 0 0' }}
                             key={key + i}
                             id={_id + '-' + key}
@@ -438,6 +440,20 @@ export const utControl = _this => props => {
             }
 
             // if props defined allowNegative, add it here
+            if (typeof _override2Decimal === "undefined" || _override2Decimal === false) {
+                _prop.decimalScale = 2
+                _prop.fixedDecimalScale = true;
+            } else if (_override2Decimal && parseInt(_override2Decimal) > 0) {
+                _prop.decimalScale = parseInt(_override2Decimal)
+                _prop.fixedDecimalScale = true;
+            } else if (_override2Decimal === "0" || _override2Decimal === 0) {
+                _prop.decimalScale = parseInt(_override2Decimal)
+                _prop.fixedDecimalScale = true;
+            } else if (_override2Decimal === true) {
+                // do nothing
+            }
+
+            // if props defined allowNegative, add it here
             if (typeof _allowNegative !== 'undefined') {
                 _prop.allowNegative = _allowNegative
             }
@@ -470,18 +486,39 @@ export const utControl = _this => props => {
                 const _l = _n.length
 
                 if (_l >= 2) {
-                    if (_n[0] === 'Text')
-                        // if (_n[0] === 'Text' || _n[0] === 'Number')  // no effect for type=number in HTML
-                        _prop.maxLength = _n[2]
+                    if (_n[0] === 'Text') {
+                        // if (_n[0] === 'Text' || _n[0] === 'Number')  // 1) no effect for type=number in HTML
+                        // _prop.maxLength = _n[2]                      // 2）Overrided by null and digits.length below
+                        // const maxLengthCalc = _n[2] - (matchDec?.[1] || 0) - (matchDec?.[1]? 1 : 0)
+                        const maxLengthCalc = _n[2]
+                        if (!_f.props) _f.props = {}
+
+                        _f.props.isAllowed = values => {
+                            // Remove everything except digits
+                            const fieldInput = values.value || '';
+                            const matchDigit = fieldInput.match(/[^\.]*(\.\d*)/)
+                            const fieldDec = (matchDigit && matchDigit[1]) ? matchDigit[1] : ""
+                            const decDigits = fieldDec?.length || 0
+                            let intDigits = (fieldInput?.length || 0) - decDigits
+                            // console.log(intDigits, Math.trunc((intDigits - 0.1) / 3 ) )
+                            intDigits = intDigits + Math.trunc((intDigits - 0.1) / 3) // add length for ","
+                            const totalDigits = intDigits + decDigits
+                            // console.log({maxLengthCalc, fieldInput, fieldInputLen:fieldInput?.length, intDigits, decDigits, totalDigits})
+                            // Allow max digits (before decimal)
+                            // return digits.length <= Math.max(maxLengthCalc != null ? maxLengthCalc : 0, 0);
+                            return totalDigits <= Math.max(maxLengthCalc != null ? maxLengthCalc : 0, 0);
+                        };
+                        _f.props.maxLength = null
+                    }
                     if (_l >= 3) {
                         // add 000 separator for numWidth space
                         var numWidth = parseInt(_n[1])
-                        numWidth = numWidth + Math.trunc((numWidth - (matchDec?.[1] || 0) - 0.1) / 3)     // parseInt(_n[2]) not always show decimal places in program codes
+                        // numWidth = numWidth + Math.trunc((numWidth - (matchDec?.[1] || 0) - 0.1) / 3)     // parseInt(_n[2]) not always show decimal places in program codes
+                        numWidth = numWidth + Math.trunc((numWidth - (_prop?.decimalScale || 0) - 0.1) / 3)     // parseInt(_n[2]) not always show decimal places in program codes
                         _prop.style.width = (numWidth * 8 + 30) + 'px'
                     }
                 }
             }
-
 
             if (hint) _prop.placeholder = hint
 
