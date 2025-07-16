@@ -189,6 +189,7 @@ export const utControl = _this => props => {
                 if (typeof text === 'string') {
                     maxWidth = Math.max(maxWidth, ctx.measureText(text).width);
                 }
+                // console.log("getAutoWidthFromOptions text: ", text, maxWidth)
             }
             // return Math.ceil(maxWidth + padding + 10) + 'px';
             return Math.ceil(maxWidth + padding + 10 + 20); // add 10 for very long option string
@@ -545,7 +546,9 @@ export const utControl = _this => props => {
             //return <Form.Control id='xxx' type='text' value={_.fields.name.value} onChange={e =>   
             //    call('change', {id, val:e.target.value})} />
 
-            if (_isRead)
+            // disable simple return div when readOnly
+            // if (_isRead)
+            if (_isRead && (type != 'textarea'))
                 return <div aria-label={_f.label}>{value}</div>
 
             delete props.isRead
@@ -578,6 +581,19 @@ export const utControl = _this => props => {
                     if (_l >= 3)
                         _props.style = { width: (parseInt(_n[1]) * 8 + 20) + 'px' }
                 }
+
+                // If readOnly then recalc field width to override original page setting 
+                if (_isRead && type === 'text') {
+                    const textWidth = (getAutoWidthFromOptions([["dummy", _props?.value || ""]]) - 30) || 0  // getAutoWidthFromOptions has 30 buffer on top of padding
+                    const n1Width = _n?.[1] ? (parseInt(_n[1]) * 8 + 20) : 0
+                    // console.log("readOnly getAutoWidthFromOptions", _id, id, _props.value, textWidth)
+                    // _props.maxLength = getAutoWidthFromOptions([["dummy", _props.value]])
+                    if (textWidth || n1Width) {
+                        _props.style.width = Math.max(textWidth, n1Width) + 'px'  // Ensure at least the min width
+                        // _props.style.width = textWidth + 'px'  // Just fit with the text length for testing
+                    }
+                }
+
             }
 
             if (hint) _props.placeholder = hint
@@ -586,7 +602,8 @@ export const utControl = _this => props => {
                 <Form.Control {...{
                     ..._props,
                     key: 'f=' + id,
-                    'aria-label': _f.label
+                    'aria-label': _f.label,
+                    readOnly: _isRead
                 }} />
             </Clear>
 
