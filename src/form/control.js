@@ -4,7 +4,7 @@ import { capitalize } from '..'
 import { getField } from './util'
 import Toggle from 'react-toggle'
 import { AiOutlineHourglass } from 'react-icons/ai'
-import { isUndefined, isEmpty, isObject, isArray, isString, indexOf } from 'lodash'
+import { isUndefined, isEmpty, isObject, isArray, isString, indexOf, isNil } from 'lodash'
 import 'react-toggle/style.css'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import { DateRange, DatePicker, SingleDate } from './daterange'
@@ -133,7 +133,7 @@ export const utControl = _this => props => {
 
     const { name, call } = _this.props
     let { st = 'value', id, index, children, elem, isRead,
-        sortListBy, override2Decimal, allowNegative, noAutoWidth, onBlur,
+        sortListBy, override2Decimal, allowNegative, showTextFieldBKColor, noAutoWidth, onBlur,
         onChange, onKeyDown, onKeyPress, append } = props
     const _p = _this.getField(id, 'parent')
     const _f = _this.getField(id)
@@ -147,6 +147,7 @@ export const utControl = _this => props => {
     sortListBy = sortListBy || _f.sortListBy
     override2Decimal = override2Decimal || _f.override2Decimal
     allowNegative = allowNegative || _f.allowNegative
+    showTextFieldBKColor = showTextFieldBKColor || _f.showTextFieldBKColor
     noAutoWidth = noAutoWidth || _f.noAutoWidth     // only for select use
 
     if (isIndex) {
@@ -166,6 +167,7 @@ export const utControl = _this => props => {
     const _sortListBy = isUndefined(sortListBy) ? _f.sortListBy : sortListBy
     const _override2Decimal = isUndefined(override2Decimal) ? _f.override2Decimal : override2Decimal
     const _allowNegative = isUndefined(allowNegative) ? _f.allowNegative : allowNegative
+    const _showTextFieldBKColor = isUndefined(showTextFieldBKColor) ? _f.showTextFieldBKColor : showTextFieldBKColor
     const _noAutoWidth = isUndefined(noAutoWidth) ? _f.noAutoWidth : noAutoWidth
     const _elem_id = name + '-' + id + '-' + st
     const _id = _elem_id
@@ -354,9 +356,20 @@ export const utControl = _this => props => {
 
                 if (_i > 1) {
                     const _val = isArray(value) ? value : [value]
-                    style.height = _i * 20 + 6 + 'px'
+                    // style.height = _i * 20 + 6 + 'px'
+                    if (_isRead && !isNil(value) && !isEmpty(value)) {
+                        // style.backgroundColor = "#e9ebee";
+                        style.height = "auto";
+                        style.width = "auto";
+                        // style.padding = "2px 5px";
+                        // style.fontSize = "15px";
+                        // style.border = "1px solid #ced4da";
+                    }
+                    else {
+                        style.height = _i * 20 + 6 + 'px';
+                    }
 
-                    return _isRead ? <div>{optionList(_val)}</div> : <select
+                    return _isRead ? <div style={style}>{optionList(_val)}</div> : <select
                         id={_elem_id}
                         multiple="multiple"
                         className='form-control'
@@ -460,10 +473,12 @@ export const utControl = _this => props => {
             }
 
             // valid.min overrid props allowNegative to resolve logical deadlock
-            if (_f?.valid?.min >= 0) {
-                _prop.allowNegative = false
-            } else if (_f?.valid?.min < 0 || _f?.valid?.max < 0) {
-                _prop.allowNegative = true
+            const v = _f?.valid;
+
+            if (v?.min >= 0) {
+                _prop.allowNegative = false;
+            } else if (v?.min < 0 || v?.max < 0) {
+                _prop.allowNegative = true;
             }
 
             // if (_f?.valid?.pattern === "This is a numeric field with at most 2 decimal places.") {
@@ -471,10 +486,11 @@ export const utControl = _this => props => {
             //     _prop.fixedDecimalScale = true;
             // }
 
-            const matchDec = _f?.valid?.pattern?.match(/numeric field with at most (\d+) decimal/)
+            const matchDec = v?.pattern?.match(/numeric field with at most (\d+) decimal/);
+
             if (matchDec && matchDec[1]) {
                 _prop.decimalScale = parseInt(matchDec[1])
-                _prop.fixedDecimalScale = true;
+                _prop.fixedDecimalScale = true
             }
 
             if (_isRead) {
@@ -548,7 +564,10 @@ export const utControl = _this => props => {
 
             // disable simple return div when readOnly
             // if (_isRead)
-            if (_isRead && (type != 'textarea'))
+            if (_isRead && type != 'textarea' && type != 'text')
+                return <div aria-label={_f.label}>{value}</div>
+
+            if (_isRead && type == 'text' && !_showTextFieldBKColor)
                 return <div aria-label={_f.label}>{value}</div>
 
             delete props.isRead
@@ -568,6 +587,11 @@ export const utControl = _this => props => {
             if (type === 'textarea') {
                 _props.as = type
                 _props.rows = props.rows || 3
+            }
+
+            // if props defined showTextFieldBKColor, add it here
+            if (typeof _showTextFieldBKColor !== 'undefined') {
+                _props.showTextFieldBKColor = _showTextFieldBKColor
             }
 
             if (_f.format) {
@@ -598,6 +622,7 @@ export const utControl = _this => props => {
 
             if (hint) _props.placeholder = hint
 
+            // delete _props.showTextFieldBKColor
             return <Clear change={_Change({ id, valid, index, type })} isRead={_isRead} width={_props.style?.width || 'auto'}>
                 <Form.Control {...{
                     ..._props,
