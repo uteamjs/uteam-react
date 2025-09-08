@@ -92,7 +92,9 @@ const _call_api = _r => tp => (func, payload, next) => {
 
     } else {
         if (tp === 'api') {
-            _setStatus('loading')
+            if(func !== "querySystemMsg"){
+                _setStatus('loading')
+            }
             storeCall(tp, func, payload, (data) => {
                 _setStatus('ready')
                 if(next)
