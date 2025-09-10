@@ -133,7 +133,7 @@ export const utControl = _this => props => {
 
     const { name, call } = _this.props
     let { st = 'value', id, index, children, elem, isRead,
-        sortListBy, override2Decimal, allowNegative, showTextFieldBKColor, noAutoWidth, onBlur,
+        sortListBy, override2Decimal, allowNegative, align, showTextFieldBKColor, noAutoWidth, onBlur,  // align only for numeric
         onChange, onKeyDown, onKeyPress, append } = props
     const _p = _this.getField(id, 'parent')
     const _f = _this.getField(id)
@@ -146,6 +146,7 @@ export const utControl = _this => props => {
     isRead = isRead || _f.isRead
     sortListBy = sortListBy || _f.sortListBy
     override2Decimal = override2Decimal || _f.override2Decimal
+    align = align || _f.align
     allowNegative = allowNegative || _f.allowNegative
     showTextFieldBKColor = showTextFieldBKColor || _f.showTextFieldBKColor
     noAutoWidth = noAutoWidth || _f.noAutoWidth     // only for select use
@@ -166,6 +167,7 @@ export const utControl = _this => props => {
     const _isRead = isUndefined(isRead) ? !(isEmpty(_p) ? _.isEdit : _p.isEdit) : (isRead === 'true' || isRead)
     const _sortListBy = isUndefined(sortListBy) ? _f.sortListBy : sortListBy
     const _override2Decimal = isUndefined(override2Decimal) ? _f.override2Decimal : override2Decimal
+    const _align = isUndefined(align) ? _f.align : align    
     const _allowNegative = isUndefined(allowNegative) ? _f.allowNegative : allowNegative
     const _showTextFieldBKColor = isUndefined(showTextFieldBKColor) ? _f.showTextFieldBKColor : showTextFieldBKColor
     const _noAutoWidth = isUndefined(noAutoWidth) ? _f.noAutoWidth : noAutoWidth
@@ -289,6 +291,7 @@ export const utControl = _this => props => {
                     multiple={!_f.single}
                     disabled={_isRead}
                     selected={value}
+                    maxResults={0}
                     allowNew={_f.allowNew || false}
                     newSelectionPrefix={_f.newSelectionPrefix || 'New selection:'}
                     clearButton={_f.clearButton || false}
@@ -439,16 +442,20 @@ export const utControl = _this => props => {
             }} />
 
         case 'numeric':
+            const numericAlign = _align === 'left' ? 'left' : 'right'
             const _prop = {
                 className: 'form-control',
                 value, thousandSeparator: ',',
                 onBlur: _Blur({ id, index, valid, type }),
                 onChange: _Change({ id, index, valid, type }),
 
-                style: { textAlign: 'right', paddingRight: '20px' },
+                style: { 
+                    // textAlign: 'right', 
+                    textAlign: numericAlign,
+                    paddingRight: '20px' },
                 getInputRef: (el) => {
                     // Force !important right alignment even if style is overridden
-                    if (el) el.style.setProperty('text-align', 'right', 'important');
+                    if (el) el.style.setProperty('text-align', numericAlign || 'right', 'important');
                 },
                 id: _id
             }
